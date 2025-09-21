@@ -47,6 +47,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        nautical: {
+          blue: "hsl(var(--nautical-blue))",
+          ocean: "hsl(var(--ocean-blue))",
+          deep: "hsl(var(--deep-sea))",
+          wave: "hsl(var(--wave-blue))",
+          foam: "hsl(var(--sea-foam))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -62,6 +69,11 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      backgroundImage: {
+        'gradient-ocean': 'var(--gradient-ocean)',
+        'gradient-wave': 'var(--gradient-wave)',
+        'gradient-horizon': 'var(--gradient-horizon)',
       },
       keyframes: {
         "accordion-down": {
