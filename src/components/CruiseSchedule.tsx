@@ -145,9 +145,14 @@ export default function CruiseSchedule() {
               <Anchor className="h-8 w-8" />
               <Anchor className="h-8 w-8" />
             </div>
-            <p className="text-3xl font-bold opacity-90">
+            <p className="text-3xl font-bold opacity-90 mb-6">
               Programa diario
             </p>
+            <div className="bg-black/20 backdrop-blur-sm rounded-lg p-4 max-w-md mx-auto">
+              <p className="text-sm font-semibold mb-2">🚢 Información de embarque</p>
+              <p className="text-xs mb-1">Konrad‑Adenauer‑Ufer 3, 50668 Köln</p>
+              <p className="text-xs">Todos a bordo: <span className="font-bold">20:15</span> | Salida: <span className="font-bold">20:30</span></p>
+            </div>
           </div>
         </div>
       </div>
