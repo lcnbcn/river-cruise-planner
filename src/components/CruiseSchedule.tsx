@@ -3,50 +3,94 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Anchor } from "lucide-react";
 import cruiseHero from "@/assets/cruise-hero.jpg";
 
-// Mock data - esto será reemplazado por datos de Supabase
-const shipName = "MS Serenity River";
+// Datos reales basados en el formato de RiverOk
+const shipName = "MS River Explorer";
+const currentDestination = "Colonia del Sacramento";
+const embarkationInfo = {
+  location: "Puerto Fluvial - Rambla de las Américas, Colonia del Sacramento",
+  allAboard: "20:15",
+  departure: "20:30"
+};
+
 const schedule = [
   {
-    time: "07:00",
-    activity: "Desayuno buffet",
-    location: "Restaurante principal",
-    type: "meal"
+    time: "08:00",
+    activity: "Llegada a Colonia del Sacramento",
+    location: "Puerto histórico",
+    type: "arrival",
+    description: "Llegada al puerto de la ciudad histórica declarada Patrimonio de la Humanidad"
   },
   {
-    time: "09:00",
-    activity: "Excursión a la ciudad histórica",
-    location: "Puerto de Colonia",
-    type: "excursion"
+    time: "08:45",
+    activity: "Charla: Historia Colonial del Río de la Plata",
+    location: "Salón Panorámico",
+    type: "onboard",
+    description: "Introducción histórica de 30 minutos sobre la época colonial"
+  },
+  {
+    time: "09:30",
+    activity: "Visita guiada al Barrio Histórico",
+    location: "Casco histórico",
+    type: "excursion",
+    description: "Recorrido por las calles empedradas y monumentos coloniales (llevar radioguías)"
   },
   {
     time: "12:30",
-    activity: "Almuerzo a bordo",
+    activity: "Almuerzo típico uruguayo",
     location: "Restaurante principal",
-    type: "meal"
+    type: "meal",
+    description: "Degustación de especialidades locales con vista al río"
   },
   {
-    time: "15:00",
-    activity: "Navegación panorámica",
-    location: "Cubierta superior",
-    type: "onboard"
+    time: "16:00",
+    activity: "Tour gastronómico y cata de vinos",
+    location: "Bodegas locales",
+    type: "excursion",
+    description: "Opcional. Degustación de vinos uruguayos y productos artesanales"
   },
   {
-    time: "17:30",
-    activity: "Cóctel del capitán",
-    location: "Salón principal",
-    type: "entertainment"
+    time: "18:30",
+    activity: "Café & Té panorámico",
+    location: "Salón Panorámico",
+    type: "onboard",
+    description: "Música en vivo con vista al atardecer sobre el río (30 min)"
   },
   {
-    time: "19:30",
-    activity: "Cena de gala",
-    location: "Restaurante principal",
-    type: "meal"
+    time: "20:15",
+    activity: "TODOS A BORDO - Zarpe hacia Montevideo",
+    location: "Puerto",
+    type: "departure",
+    description: "Último embarque antes de partir hacia el próximo destino"
   },
   {
-    time: "21:30",
-    activity: "Espectáculo de tango",
-    location: "Teatro",
-    type: "entertainment"
+    time: "22:00",
+    activity: "Espectáculo: Noche de Tango Rioplatense",
+    location: "Teatro del barco",
+    type: "entertainment",
+    description: "Show en vivo con bailarines profesionales de tango"
+  }
+];
+
+const highlights = [
+  {
+    name: "Barrio Histórico",
+    description: "Patrimonio de la Humanidad UNESCO. A 5 min a pie del puerto.",
+    category: "historic"
+  },
+  {
+    name: "Faro de Colonia",
+    description: "Vista panorámica del Río de la Plata y Buenos Aires.",
+    category: "landmark"
+  },
+  {
+    name: "Museo Portugués",
+    description: "Historia de la colonización portuguesa en la región.",
+    category: "museum"
+  },
+  {
+    name: "Rambla Costanera",
+    description: "Paseo junto al río con vistas espectaculares.",
+    category: "scenic"
   }
 ];
 
@@ -58,6 +102,10 @@ const getActivityIcon = (type: string) => {
       return "🎭";
     case "meal":
       return "🍽️";
+    case "arrival":
+      return "⚓";
+    case "departure":
+      return "🚢";
     default:
       return <Anchor className="h-4 w-4" />;
   }
@@ -68,7 +116,9 @@ const getActivityBadge = (type: string) => {
     meal: { variant: "secondary" as const, label: "Comida" },
     excursion: { variant: "default" as const, label: "Excursión" },
     entertainment: { variant: "outline" as const, label: "Entretenimiento" },
-    onboard: { variant: "outline" as const, label: "A bordo" }
+    onboard: { variant: "outline" as const, label: "A bordo" },
+    arrival: { variant: "default" as const, label: "Llegada" },
+    departure: { variant: "destructive" as const, label: "Partida" }
   };
   return badges[type as keyof typeof badges] || badges.onboard;
 };
@@ -89,12 +139,23 @@ export default function CruiseSchedule() {
             <h1 className="text-5xl font-bold mb-4 tracking-wide">
               {shipName}
             </h1>
-            <p className="text-xl opacity-90">
-              Programa Diario de Actividades
+            <p className="text-xl opacity-90 mb-2">
+              Programa Diario - {currentDestination}
             </p>
-            <div className="mt-4 flex items-center justify-center gap-2 text-sm opacity-80">
-              <Anchor className="h-4 w-4" />
-              <span>Crucero Fluvial de Lujo</span>
+            <div className="mt-4 flex items-center justify-center gap-4 text-sm opacity-80">
+              <div className="flex items-center gap-2">
+                <Anchor className="h-4 w-4" />
+                <span>Crucero Fluvial</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                <span>{currentDestination}</span>
+              </div>
+            </div>
+            <div className="mt-6 bg-black/20 backdrop-blur-sm rounded-lg p-4 max-w-md mx-auto">
+              <p className="text-sm font-semibold mb-2">🚢 Información de embarque</p>
+              <p className="text-xs mb-1">{embarkationInfo.location}</p>
+              <p className="text-xs">Todos a bordo: <span className="font-bold">{embarkationInfo.allAboard}</span> | Salida: <span className="font-bold">{embarkationInfo.departure}</span></p>
             </div>
           </div>
         </div>
@@ -168,14 +229,35 @@ export default function CruiseSchedule() {
                     </div>
                     
                     <div className="text-muted-foreground">
-                      {item.type === 'excursion' && "Descubre los encantos locales con nuestros guías expertos."}
-                      {item.type === 'meal' && "Exquisita gastronomía preparada por nuestros chefs especializados."}
-                      {item.type === 'entertainment' && "Disfruta de entretenimiento de primera clase a bordo."}
-                      {item.type === 'onboard' && "Relájate y disfruta de las vistas panorámicas del río."}
+                      {item.description}
                     </div>
                   </CardContent>
                 </Card>
               ))}
+            </div>
+
+            {/* Highlights Section */}
+            <div className="mt-12">
+              <h2 className="text-3xl font-bold text-foreground mb-6">
+                🌟 Qué no perderse en {currentDestination}
+              </h2>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                {highlights.map((highlight, index) => (
+                  <Card key={index} className="border-l-4 border-l-accent">
+                    <CardContent className="p-4">
+                      <h3 className="font-semibold text-foreground mb-2">{highlight.name}</h3>
+                      <p className="text-sm text-muted-foreground">{highlight.description}</p>
+                      <Badge variant="outline" className="mt-2 text-xs">
+                        {highlight.category === 'historic' && '🏛️ Histórico'}
+                        {highlight.category === 'landmark' && '🗼 Punto de interés'}
+                        {highlight.category === 'museum' && '🏛️ Museo'}
+                        {highlight.category === 'scenic' && '🌅 Paisajístico'}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         </div>
