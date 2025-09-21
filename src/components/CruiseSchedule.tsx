@@ -145,13 +145,30 @@ export default function CruiseSchedule() {
               <Anchor className="h-8 w-8" />
               <Anchor className="h-8 w-8" />
             </div>
-            <p className="text-3xl font-bold opacity-90 mb-6">
+            <p className="text-3xl font-bold opacity-90">
               Programa diario
             </p>
-            <div className="bg-black/20 backdrop-blur-sm rounded-lg p-4 max-w-md mx-auto">
-              <p className="text-sm font-semibold mb-2">🚢 Información de embarque</p>
-              <p className="text-xs mb-1">Konrad‑Adenauer‑Ufer 3, 50668 Köln</p>
-              <p className="text-xs">Todos a bordo: <span className="font-bold">20:15</span> | Salida: <span className="font-bold">20:30</span></p>
+          </div>
+        </div>
+      </div>
+
+      {/* Información de embarque */}
+      <div className="container mx-auto px-6 -mt-6 relative z-10">
+        <div className="bg-card rounded-lg border shadow-lg p-6 max-w-2xl mx-auto">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="bg-primary text-primary-foreground rounded-full p-2">
+              <Anchor className="h-5 w-5" />
+            </div>
+            <h3 className="text-lg font-semibold">Información de embarque</h3>
+          </div>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <MapPin className="h-4 w-4" />
+              <span>Konrad‑Adenauer‑Ufer 3, 50668 Köln</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Clock className="h-4 w-4" />
+              <span>Todos a bordo: <span className="font-bold text-foreground">20:15</span> | Salida: <span className="font-bold text-foreground">20:30</span></span>
             </div>
           </div>
         </div>
