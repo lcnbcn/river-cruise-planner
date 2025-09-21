@@ -139,24 +139,9 @@ export default function CruiseSchedule() {
             <h1 className="text-5xl font-bold mb-4 tracking-wide">
               {shipName}
             </h1>
-            <p className="text-xl opacity-90 mb-2">
-              Programa Diario - {currentDestination}
+            <p className="text-xl opacity-90">
+              Programa diario
             </p>
-            <div className="mt-4 flex items-center justify-center gap-4 text-sm opacity-80">
-              <div className="flex items-center gap-2">
-                <Anchor className="h-4 w-4" />
-                <span>Crucero Fluvial</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                <span>{currentDestination}</span>
-              </div>
-            </div>
-            <div className="mt-6 bg-black/20 backdrop-blur-sm rounded-lg p-4 max-w-md mx-auto">
-              <p className="text-sm font-semibold mb-2">🚢 Información de embarque</p>
-              <p className="text-xs mb-1">{embarkationInfo.location}</p>
-              <p className="text-xs">Todos a bordo: <span className="font-bold">{embarkationInfo.allAboard}</span> | Salida: <span className="font-bold">{embarkationInfo.departure}</span></p>
-            </div>
           </div>
         </div>
       </div>
