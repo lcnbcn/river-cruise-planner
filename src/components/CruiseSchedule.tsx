@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Anchor } from "lucide-react";
-import cruiseHero from "@/assets/cruise-hero.jpg";
+import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 
 // Datos reales basados en el formato de RiverOk
 const shipName = "MS River Explorer";
