@@ -4,7 +4,7 @@ import { Clock, MapPin, Anchor } from "lucide-react";
 import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 
 // Datos reales basados en el formato de RiverOk
-const shipName = "MS River Explorer";
+const shipName = "MS Charles Dickens";
 const currentDestination = "Colonia del Sacramento";
 const embarkationInfo = {
   location: "Puerto Fluvial - Rambla de las Américas, Colonia del Sacramento",
