@@ -139,9 +139,12 @@ export default function CruiseSchedule() {
             <h1 className="text-5xl font-bold mb-2 tracking-wide">
               {shipName}
             </h1>
-            <h2 className="text-2xl font-semibold mb-4 opacity-90">
-              Cuatro Anclas
-            </h2>
+            <div className="flex justify-center gap-4 mb-4">
+              <Anchor className="h-8 w-8" />
+              <Anchor className="h-8 w-8" />
+              <Anchor className="h-8 w-8" />
+              <Anchor className="h-8 w-8" />
+            </div>
             <p className="text-3xl font-bold opacity-90">
               Programa diario
             </p>
