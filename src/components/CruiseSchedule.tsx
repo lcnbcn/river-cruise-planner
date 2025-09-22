@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 // Datos reales basados en el formato de RiverOk
 const shipName = "MS Charles Dickens";
-const currentDestination = "Colonia del Sacramento";
+const currentDestination = "Colonia";
 const embarkationInfo = {
   location: "Puerto Fluvial - Rambla de las Américas, Colonia del Sacramento",
   allAboard: "20:15",
