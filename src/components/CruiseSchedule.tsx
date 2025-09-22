@@ -308,6 +308,45 @@ export default function CruiseSchedule() {
               ))}
             </div>
 
+            {/* Restaurant Schedule Section */}
+            <div className="mt-12">
+              <h2 className="text-3xl font-bold text-foreground mb-6">
+                🍽️ Horario restaurante
+              </h2>
+              
+              <div className="grid sm:grid-cols-3 gap-4">
+                <Card className="border-l-4 border-l-primary">
+                  <CardContent className="p-6 text-center">
+                    <div className="bg-primary text-primary-foreground rounded-full p-3 w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                      🌅
+                    </div>
+                    <h3 className="font-semibold text-foreground mb-2">Desayuno</h3>
+                    <p className="text-xl font-bold text-primary">7:00 - 9:30</p>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-l-4 border-l-secondary">
+                  <CardContent className="p-6 text-center">
+                    <div className="bg-secondary text-secondary-foreground rounded-full p-3 w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                      ☀️
+                    </div>
+                    <h3 className="font-semibold text-foreground mb-2">Almuerzo</h3>
+                    <p className="text-xl font-bold text-secondary">13:00 - 15:00</p>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-l-4 border-l-accent">
+                  <CardContent className="p-6 text-center">
+                    <div className="bg-accent text-accent-foreground rounded-full p-3 w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                      🌙
+                    </div>
+                    <h3 className="font-semibold text-foreground mb-2">Cena</h3>
+                    <p className="text-xl font-bold text-accent">20:00 - 22:30</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
             {/* Highlights Section */}
             <div className="mt-12">
               <h2 className="text-3xl font-bold text-foreground mb-6">
