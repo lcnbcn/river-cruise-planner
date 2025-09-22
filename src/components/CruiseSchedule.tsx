@@ -127,6 +127,18 @@ export default function CruiseSchedule() {
             <p className="text-3xl font-bold opacity-90">
               Programa diario
             </p>
+            <div className="flex flex-col sm:flex-row items-center gap-2 mt-4 text-lg opacity-90">
+              <span>{new Date().toLocaleDateString('es-ES', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="flex items-center gap-2">
+                🌤️ 18°C - Colonia del Sacramento
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -163,13 +175,13 @@ export default function CruiseSchedule() {
                 <DialogHeader>
                   <DialogTitle>Abrir ubicación en:</DialogTitle>
                 </DialogHeader>
-                 <div className="grid grid-cols-1 gap-3 py-4 px-3">
+                 <div className="grid grid-cols-1 gap-3 py-4 px-3 mx-3">
                    <Button
                      variant="outline"
                      onClick={() => window.open(`https://maps.apple.com/?q=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
                      className="justify-start gap-3"
                    >
-                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Apple_Maps_icon.svg/512px-Apple_Maps_icon.svg.png" alt="Apple Maps" className="w-6 h-6" />
+                     <img src="https://developer.apple.com/assets/elements/icons/maps/maps-96x96_2x.png" alt="Apple Maps" className="w-6 h-6" />
                      Apple Maps
                    </Button>
                    <Button
@@ -197,24 +209,24 @@ export default function CruiseSchedule() {
               
               {schedule.map((item, index) => (
                 <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
-                  <CardContent className="p-6">
-                     <div className="flex items-start justify-between mb-4">
-                       <div className="flex items-center gap-3">
-                         <div className="bg-primary text-primary-foreground rounded-lg p-2 text-lg font-mono font-bold">
+                  <CardContent className="p-4 sm:p-6">
+                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+                       <div className="flex items-center gap-3 flex-1">
+                         <div className="bg-primary text-primary-foreground rounded-lg p-2 text-lg font-mono font-bold min-w-[60px] text-center">
                            {item.hora}
                          </div>
-                         <div>
-                           <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                         <div className="flex-1">
+                           <h3 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
                              {item.actividad}
                            </h3>
                          </div>
                        </div>
-                       <Badge {...getActivityBadge(item.tipo_actividad)}>
+                       <Badge {...getActivityBadge(item.tipo_actividad)} className="self-start">
                          {getActivityBadge(item.tipo_actividad).label}
                        </Badge>
                      </div>
                      
-                     <div className="text-muted-foreground">
+                     <div className="text-muted-foreground text-sm sm:text-base">
                        {item.obs}
                      </div>
                   </CardContent>
