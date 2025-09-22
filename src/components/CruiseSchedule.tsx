@@ -284,15 +284,15 @@ export default function CruiseSchedule() {
                             </h3>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 self-start p-3 bg-muted/30 rounded-lg">
-                          <Badge {...getActivityBadge(item.tipo_actividad)}>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 self-start p-3 bg-muted/30 rounded-lg">
+                          <Badge {...getActivityBadge(item.tipo_actividad)} className="flex-shrink-0">
                             {getActivityBadge(item.tipo_actividad).label}
                           </Badge>
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => addToCalendar(item)}
-                            className="gap-2"
+                            className="gap-2 whitespace-nowrap"
                           >
                             <Calendar className="h-4 w-4" />
                             Añadir al calendario
