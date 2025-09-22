@@ -180,11 +180,11 @@ export default function CruiseSchedule() {
                   <ExternalLink className="h-4 w-4 ml-2" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
+              <DialogContent className="sm:max-w-md px-3">
                 <DialogHeader>
                   <DialogTitle>Abrir ubicación en:</DialogTitle>
                 </DialogHeader>
-                 <div className="grid grid-cols-1 gap-3 py-4 mx-3">
+                 <div className="grid grid-cols-1 gap-3 py-4">
                    <Button
                      variant="outline"
                      onClick={() => window.open(`https://maps.apple.com/?q=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
