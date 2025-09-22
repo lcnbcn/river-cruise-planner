@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Clock, MapPin, Anchor, ExternalLink, Calendar } from "lucide-react";
 import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,6 +32,36 @@ type DestacadoItem = {
   img: string;
 };
 
+// Convierte enlaces de Google Maps (q, query, place, dir, @coords) a una consulta válida para Apple Maps
+const googleToAppleQuery = (input: string, fallback: string) => {
+  if (!input) return fallback;
+  try {
+    // Si es texto plano, úsalo tal cual
+    if (!/^https?:\/\//i.test(input)) return input;
+
+    const url = new URL(input);
+    const params = url.searchParams;
+
+    // 1) Parámetros comunes
+    const byParam = params.get('q') || params.get('query') || params.get('destination');
+    if (byParam) return decodeURIComponent(byParam);
+
+    // 2) Ruta /place/<nombre>
+    const placeMatch = url.pathname.match(/\/place\/([^/]+)/);
+    if (placeMatch?.[1]) {
+      return decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+    }
+
+    // 3) Coordenadas en el patrón @lat,lon,zoom
+    const coordsMatch = input.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (coordsMatch) return `${coordsMatch[1]},${coordsMatch[2]}`;
+
+    // 4) Último recurso: todo el texto sin la URL
+    return fallback;
+  } catch {
+    return fallback;
+  }
+};
 
 const getActivityIcon = (type: string) => {
   switch (type) {
@@ -243,6 +273,7 @@ export default function CruiseSchedule() {
               <DialogContent className="sm:max-w-md px-3">
                 <DialogHeader>
                   <DialogTitle>Abrir ubicación en:</DialogTitle>
+                  <DialogDescription className="sr-only">Seleccioná la app de mapas para abrir la ubicación</DialogDescription>
                 </DialogHeader>
                  <div className="grid grid-cols-1 gap-3 py-4">
                    <Button
@@ -368,6 +399,7 @@ export default function CruiseSchedule() {
                           <DialogContent className="sm:max-w-md px-3">
                             <DialogHeader>
                               <DialogTitle>Abrir ubicación en:</DialogTitle>
+                              <DialogDescription className="sr-only">Seleccioná la app de mapas para abrir la ubicación</DialogDescription>
                             </DialogHeader>
                             <div className="grid grid-cols-1 gap-3 py-4">
                               <Button
