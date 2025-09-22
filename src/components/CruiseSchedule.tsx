@@ -24,28 +24,14 @@ type ProgramaItem = {
   obs: string;
 };
 
-const highlights = [
-  {
-    name: "Barrio Histórico",
-    description: "Patrimonio de la Humanidad UNESCO. A 5 min a pie del puerto.",
-    category: "historic"
-  },
-  {
-    name: "Faro de Colonia",
-    description: "Vista panorámica del Río de la Plata y Buenos Aires.",
-    category: "landmark"
-  },
-  {
-    name: "Museo Portugués",
-    description: "Historia de la colonización portuguesa en la región.",
-    category: "museum"
-  },
-  {
-    name: "Rambla Costanera",
-    description: "Paseo junto al río con vistas espectaculares.",
-    category: "scenic"
-  }
-];
+type DestacadoItem = {
+  id: number;
+  lugar: string;
+  descripcion: string;
+  direccion: string;
+  img: string;
+};
+
 
 const getActivityIcon = (type: string) => {
   switch (type) {
@@ -139,7 +125,9 @@ const addToCalendar = (activity: ProgramaItem) => {
 
 export default function CruiseSchedule() {
   const [schedule, setSchedule] = useState<ProgramaItem[]>([]);
+  const [destacados, setDestacados] = useState<DestacadoItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingDestacados, setLoadingDestacados] = useState(true);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -161,7 +149,27 @@ export default function CruiseSchedule() {
       }
     };
 
+    const fetchDestacados = async () => {
+      try {
+        const { data, error } = await (supabase as any)
+          .from('destacado')
+          .select('id, lugar, descripcion, direccion, img')
+          .order('id', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching destacados:', error);
+        } else {
+          setDestacados(data || []);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoadingDestacados(false);
+      }
+    };
+
     fetchSchedule();
+    fetchDestacados();
   }, []);
 
   return (
@@ -341,17 +349,19 @@ export default function CruiseSchedule() {
               </h2>
               
               <div className="grid md:grid-cols-2 gap-4">
-                {highlights.map((highlight, index) => (
+                {loadingDestacados ? (
+                  <div className="text-center py-8 col-span-2">Cargando destacados...</div>
+                ) : destacados.map((destacado, index) => (
                   <Card key={index} className="border-l-4 border-l-accent">
                     <CardContent className="p-4">
-                      <h3 className="font-semibold text-foreground mb-2">{highlight.name}</h3>
-                      <p className="text-sm text-muted-foreground">{highlight.description}</p>
-                      <Badge variant="outline" className="mt-2 text-xs">
-                        {highlight.category === 'historic' && '🏛️ Histórico'}
-                        {highlight.category === 'landmark' && '🗼 Punto de interés'}
-                        {highlight.category === 'museum' && '🏛️ Museo'}
-                        {highlight.category === 'scenic' && '🌅 Paisajístico'}
-                      </Badge>
+                      <h3 className="font-semibold text-foreground mb-2">{destacado.lugar}</h3>
+                      <p className="text-sm text-muted-foreground mb-2">{destacado.descripcion}</p>
+                      {destacado.direccion && (
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {destacado.direccion}
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
