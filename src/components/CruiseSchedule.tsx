@@ -269,7 +269,6 @@ export default function CruiseSchedule() {
                   </Card>
                 ))}
               </div>
-            </div>
           </div>
         </div>
       </div>
