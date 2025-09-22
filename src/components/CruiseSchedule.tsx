@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, MapPin, Anchor } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Clock, MapPin, Anchor, ExternalLink } from "lucide-react";
 import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 
 // Datos reales basados en el formato de RiverOk
@@ -171,48 +173,44 @@ export default function CruiseSchedule() {
               <span>Todos a bordo: <span className="font-bold text-foreground">20:15</span> | Salida: <span className="font-bold text-foreground">20:30</span></span>
             </div>
           </div>
+          <div className="mt-4">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full">
+                  <MapPin className="h-4 w-4 mr-2" />
+                  Ver ubicación en mapa
+                  <ExternalLink className="h-4 w-4 ml-2" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Abrir ubicación en:</DialogTitle>
+                </DialogHeader>
+                <div className="grid grid-cols-1 gap-3 py-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => window.open(`https://maps.apple.com/?q=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
+                    className="justify-start"
+                  >
+                    🍎 Apple Maps
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
+                    className="justify-start"
+                  >
+                    🗺️ Google Maps
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-12 gap-8">
-          {/* Time Schedule Column */}
-          <div className="lg:col-span-4">
-            <Card className="sticky top-6">
-              <CardHeader className="bg-gradient-wave text-primary-foreground">
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Horarios del Día
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="space-y-0">
-                  {schedule.map((item, index) => (
-                    <div 
-                      key={index}
-                      className="flex items-center justify-between p-4 border-b last:border-b-0 hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="text-lg font-mono font-semibold text-primary">
-                          {item.time}
-                        </div>
-                      </div>
-                      <div className="text-2xl">
-                        {typeof getActivityIcon(item.type) === 'string' ? 
-                          getActivityIcon(item.type) : 
-                          <div className="text-nautical-wave">{getActivityIcon(item.type)}</div>
-                        }
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Activities Column */}
-          <div className="lg:col-span-8">
+        <div className="max-w-4xl mx-auto">
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-foreground mb-6">
                 Actividades y Excursiones
