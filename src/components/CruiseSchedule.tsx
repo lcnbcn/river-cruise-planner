@@ -136,7 +136,7 @@ export default function CruiseSchedule() {
               })}</span>
               <span className="hidden sm:inline">•</span>
               <span className="flex items-center gap-2">
-                🌤️ 18°C - Colonia del Sacramento
+                🌤️ 18°C - Köln, Alemania
               </span>
             </div>
           </div>
@@ -175,7 +175,7 @@ export default function CruiseSchedule() {
                 <DialogHeader>
                   <DialogTitle>Abrir ubicación en:</DialogTitle>
                 </DialogHeader>
-                 <div className="grid grid-cols-1 gap-3 py-4 px-3 mx-3">
+                 <div className="grid grid-cols-1 gap-3 py-4 mx-3">
                    <Button
                      variant="outline"
                      onClick={() => window.open(`https://maps.apple.com/?q=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
@@ -207,7 +207,9 @@ export default function CruiseSchedule() {
                 Actividades y Excursiones
               </h2>
               
-              {schedule.map((item, index) => (
+              {loading ? (
+                <div className="text-center py-8">Cargando programa...</div>
+              ) : schedule.map((item, index) => (
                 <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
                   <CardContent className="p-4 sm:p-6">
                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
@@ -229,7 +231,7 @@ export default function CruiseSchedule() {
                      <div className="text-muted-foreground text-sm sm:text-base">
                        {item.obs}
                      </div>
-                  </CardContent>
+                   </CardContent>
                 </Card>
               ))}
             </div>
