@@ -297,7 +297,7 @@ export default function CruiseSchedule() {
                           className="gap-2"
                         >
                           <Calendar className="h-4 w-4" />
-                          Añadir a calendario
+                          Añadir al calendario
                         </Button>
                       </div>
                      
