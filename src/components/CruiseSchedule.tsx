@@ -65,15 +65,24 @@ const getActivityIcon = (type: string) => {
 };
 
 const getActivityBadge = (type: string) => {
+  // Normalizar el tipo para el mapeo
+  const normalizedType = type?.toLowerCase().trim();
+  
+  // Mapeo dinámico basado en los tipos reales de la base de datos
   const badges = {
-    meal: { variant: "secondary" as const, label: "Comida" },
-    excursion: { variant: "default" as const, label: "Excursión" },
-    entertainment: { variant: "outline" as const, label: "Entretenimiento" },
-    onboard: { variant: "outline" as const, label: "A bordo" },
-    arrival: { variant: "default" as const, label: "Llegada" },
-    departure: { variant: "destructive" as const, label: "Partida" }
+    'excursión': { variant: "default" as const, label: "Excursión" },
+    'entretenimiento': { variant: "outline" as const, label: "Entretenimiento" },
+    'llegada': { variant: "default" as const, label: "Llegada" },
+    'salida': { variant: "destructive" as const, label: "Salida" },
+    'charla': { variant: "secondary" as const, label: "Charla" },
+    'importante': { variant: "destructive" as const, label: "Importante" }
   };
-  return badges[type as keyof typeof badges] || badges.onboard;
+  
+  // Si no encuentra el tipo exacto, usar el tipo original como label
+  return badges[normalizedType as keyof typeof badges] || { 
+    variant: "outline" as const, 
+    label: type || "A bordo" 
+  };
 };
 
 export default function CruiseSchedule() {
