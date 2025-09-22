@@ -190,16 +190,18 @@ export default function CruiseSchedule() {
                   <Button
                     variant="outline"
                     onClick={() => window.open(`https://maps.apple.com/?q=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
-                    className="justify-start"
+                    className="justify-start gap-3"
                   >
-                    🍎 Apple Maps
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Apple_Maps_icon.svg/512px-Apple_Maps_icon.svg.png" alt="Apple Maps" className="w-6 h-6" />
+                    Apple Maps
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
-                    className="justify-start"
+                    className="justify-start gap-3"
                   >
-                    🗺️ Google Maps
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/512px-Google_Maps_Logo_2020.svg.png" alt="Google Maps" className="w-6 h-6" />
+                    Google Maps
                   </Button>
                 </div>
               </DialogContent>
