@@ -405,17 +405,8 @@ export default function CruiseSchedule() {
                               <Button
                                 variant="outline"
                                 onClick={() => {
-                                  // Convertir enlace de Google Maps a formato de Apple Maps
-                                  let query = destacado.lugar;
-                                  if (destacado.direccion?.includes('google.com/maps')) {
-                                    // Extraer coordenadas o dirección del enlace de Google Maps
-                                    const match = destacado.direccion.match(/q=([^&]+)/);
-                                    if (match) {
-                                      query = decodeURIComponent(match[1]);
-                                    }
-                                  } else if (destacado.direccion) {
-                                    query = destacado.direccion;
-                                  }
+                                  const input = destacado.direccion || destacado.lugar;
+                                  const query = googleToAppleQuery(input, destacado.lugar);
                                   window.open(`https://maps.apple.com/?q=${encodeURIComponent(query)}`, '_blank');
                                 }}
                                 className="justify-start gap-3"
@@ -425,7 +416,15 @@ export default function CruiseSchedule() {
                               </Button>
                               <Button
                                 variant="outline"
-                                onClick={() => window.open(destacado.direccion, '_blank')}
+                                onClick={() => {
+                                  const url = destacado.direccion;
+                                  if (url && /^https?:\/\//i.test(url)) {
+                                    window.open(url, '_blank');
+                                  } else {
+                                    const search = url || destacado.lugar;
+                                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(search)}`, '_blank');
+                                  }
+                                }}
                                 className="justify-start gap-3"
                               >
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/512px-Google_Maps_Logo_2020.svg.png" alt="Google Maps" className="w-6 h-6" />
