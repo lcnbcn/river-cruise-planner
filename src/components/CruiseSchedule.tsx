@@ -383,10 +383,19 @@ export default function CruiseSchedule() {
                 {loadingDestacados ? (
                   <div className="text-center py-8 col-span-2">Cargando destacados...</div>
                 ) : destacados.map((destacado, index) => (
-                  <Card key={index} className="border-l-4 border-l-accent">
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold text-foreground mb-2">{destacado.lugar}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{destacado.descripcion}</p>
+                   <Card key={index} className="border-l-4 border-l-accent">
+                     <CardContent className="p-4">
+                       {destacado.img && (
+                         <div className="w-full mb-3">
+                           <img 
+                             src={destacado.img} 
+                             alt={destacado.lugar}
+                             className="w-full h-32 object-cover rounded-lg"
+                           />
+                         </div>
+                       )}
+                       <h3 className="font-semibold text-foreground mb-2">{destacado.lugar}</h3>
+                       <p className="text-sm text-muted-foreground mb-3">{destacado.descripcion}</p>
                       {destacado.direccion && (
                         <Dialog>
                           <DialogTrigger asChild>
