@@ -323,11 +323,11 @@ export default function CruiseSchedule() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-2">Almuerzo</h3>
-                      <p className="text-xl font-bold text-secondary">13:00 a 15:00</p>
+                      <p className="text-xl font-bold text-primary">13:00 a 15:00</p>
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-2">Cena</h3>
-                      <p className="text-xl font-bold text-accent">20:00 a 22:30</p>
+                      <p className="text-xl font-bold text-primary">20:00 a 22:30</p>
                     </div>
                   </div>
                 </CardContent>
