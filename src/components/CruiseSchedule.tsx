@@ -372,6 +372,14 @@ export default function CruiseSchedule() {
                             <div className="grid grid-cols-1 gap-3 py-4">
                               <Button
                                 variant="outline"
+                                onClick={() => window.open(`https://maps.apple.com/?q=${encodeURIComponent(destacado.lugar)}`, '_blank')}
+                                className="justify-start gap-3"
+                              >
+                                <img src="https://developer.apple.com/assets/elements/icons/maps/maps-96x96_2x.png" alt="Apple Maps" className="w-6 h-6" />
+                                Mapas
+                              </Button>
+                              <Button
+                                variant="outline"
                                 onClick={() => window.open(destacado.direccion, '_blank')}
                                 className="justify-start gap-3"
                               >
