@@ -372,7 +372,20 @@ export default function CruiseSchedule() {
                             <div className="grid grid-cols-1 gap-3 py-4">
                               <Button
                                 variant="outline"
-                                onClick={() => window.open(`https://maps.apple.com/?q=Cologne Cathedral, Cologne, Germany`, '_blank')}
+                                onClick={() => {
+                                  // Convertir enlace de Google Maps a formato de Apple Maps
+                                  let query = destacado.lugar;
+                                  if (destacado.direccion?.includes('google.com/maps')) {
+                                    // Extraer coordenadas o dirección del enlace de Google Maps
+                                    const match = destacado.direccion.match(/q=([^&]+)/);
+                                    if (match) {
+                                      query = decodeURIComponent(match[1]);
+                                    }
+                                  } else if (destacado.direccion) {
+                                    query = destacado.direccion;
+                                  }
+                                  window.open(`https://maps.apple.com/?q=${encodeURIComponent(query)}`, '_blank');
+                                }}
                                 className="justify-start gap-3"
                               >
                                 <img src="https://developer.apple.com/assets/elements/icons/maps/maps-96x96_2x.png" alt="Apple Maps" className="w-6 h-6" />
