@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Clock, MapPin, Anchor, ExternalLink } from "lucide-react";
 import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 // Datos reales basados en el formato de RiverOk
 const shipName = "MS Charles Dickens";
@@ -14,64 +16,13 @@ const embarkationInfo = {
   departure: "20:30"
 };
 
-const schedule = [
-  {
-    time: "08:00",
-    activity: "Llegada a Colonia del Sacramento",
-    location: "Puerto histórico",
-    type: "arrival",
-    description: "Llegada al puerto de la ciudad histórica declarada Patrimonio de la Humanidad"
-  },
-  {
-    time: "08:45",
-    activity: "Charla: Historia Colonial del Río de la Plata",
-    location: "Salón Panorámico",
-    type: "onboard",
-    description: "Introducción histórica de 30 minutos sobre la época colonial"
-  },
-  {
-    time: "09:30",
-    activity: "Visita guiada al Barrio Histórico",
-    location: "Casco histórico",
-    type: "excursion",
-    description: "Recorrido por las calles empedradas y monumentos coloniales (llevar radioguías)"
-  },
-  {
-    time: "12:30",
-    activity: "Almuerzo típico uruguayo",
-    location: "Restaurante principal",
-    type: "meal",
-    description: "Degustación de especialidades locales con vista al río"
-  },
-  {
-    time: "16:00",
-    activity: "Tour gastronómico y cata de vinos",
-    location: "Bodegas locales",
-    type: "excursion",
-    description: "Opcional. Degustación de vinos uruguayos y productos artesanales"
-  },
-  {
-    time: "18:30",
-    activity: "Café & Té panorámico",
-    location: "Salón Panorámico",
-    type: "onboard",
-    description: "Música en vivo con vista al atardecer sobre el río (30 min)"
-  },
-  {
-    time: "20:15",
-    activity: "TODOS A BORDO - Zarpe hacia Montevideo",
-    location: "Puerto",
-    type: "departure",
-    description: "Último embarque antes de partir hacia el próximo destino"
-  },
-  {
-    time: "22:00",
-    activity: "Espectáculo: Noche de Tango Rioplatense",
-    location: "Teatro del barco",
-    type: "entertainment",
-    description: "Show en vivo con bailarines profesionales de tango"
-  }
-];
+type ProgramaItem = {
+  id: number;
+  hora: string;
+  actividad: string;
+  tipo_actividad: string;
+  obs: string;
+};
 
 const highlights = [
   {
@@ -126,6 +77,32 @@ const getActivityBadge = (type: string) => {
 };
 
 export default function CruiseSchedule() {
+  const [schedule, setSchedule] = useState<ProgramaItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('programa_diario')
+          .select('*')
+          .order('id', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching schedule:', error);
+        } else {
+          setSchedule(data || []);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSchedule();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-horizon">
       {/* Hero Section */}
@@ -186,24 +163,24 @@ export default function CruiseSchedule() {
                 <DialogHeader>
                   <DialogTitle>Abrir ubicación en:</DialogTitle>
                 </DialogHeader>
-                <div className="grid grid-cols-1 gap-3 py-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => window.open(`https://maps.apple.com/?q=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
-                    className="justify-start gap-3"
-                  >
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Apple_Maps_icon.svg/512px-Apple_Maps_icon.svg.png" alt="Apple Maps" className="w-6 h-6" />
-                    Apple Maps
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
-                    className="justify-start gap-3"
-                  >
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/512px-Google_Maps_Logo_2020.svg.png" alt="Google Maps" className="w-6 h-6" />
-                    Google Maps
-                  </Button>
-                </div>
+                 <div className="grid grid-cols-1 gap-3 py-4 px-3">
+                   <Button
+                     variant="outline"
+                     onClick={() => window.open(`https://maps.apple.com/?q=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
+                     className="justify-start gap-3"
+                   >
+                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Apple_Maps_icon.svg/512px-Apple_Maps_icon.svg.png" alt="Apple Maps" className="w-6 h-6" />
+                     Apple Maps
+                   </Button>
+                   <Button
+                     variant="outline"
+                     onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
+                     className="justify-start gap-3"
+                   >
+                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/512px-Google_Maps_Logo_2020.svg.png" alt="Google Maps" className="w-6 h-6" />
+                     Google Maps
+                   </Button>
+                 </div>
               </DialogContent>
             </Dialog>
           </div>
@@ -221,29 +198,25 @@ export default function CruiseSchedule() {
               {schedule.map((item, index) => (
                 <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
                   <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-primary text-primary-foreground rounded-lg p-2 text-lg font-mono font-bold">
-                          {item.time}
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {item.activity}
-                          </h3>
-                          <div className="flex items-center gap-1 text-muted-foreground mt-1">
-                            <MapPin className="h-4 w-4" />
-                            <span>{item.location}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <Badge {...getActivityBadge(item.type)}>
-                        {getActivityBadge(item.type).label}
-                      </Badge>
-                    </div>
-                    
-                    <div className="text-muted-foreground">
-                      {item.description}
-                    </div>
+                     <div className="flex items-start justify-between mb-4">
+                       <div className="flex items-center gap-3">
+                         <div className="bg-primary text-primary-foreground rounded-lg p-2 text-lg font-mono font-bold">
+                           {item.hora}
+                         </div>
+                         <div>
+                           <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                             {item.actividad}
+                           </h3>
+                         </div>
+                       </div>
+                       <Badge {...getActivityBadge(item.tipo_actividad)}>
+                         {getActivityBadge(item.tipo_actividad).label}
+                       </Badge>
+                     </div>
+                     
+                     <div className="text-muted-foreground">
+                       {item.obs}
+                     </div>
                   </CardContent>
                 </Card>
               ))}
