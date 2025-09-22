@@ -470,15 +470,7 @@ export default function CruiseSchedule() {
               <Phone className="w-4 h-4" />
               Llamar
             </a>
-            <a
-              href="https://wa.me/4915209349674"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
-            >
-              <MessageCircle className="w-4 h-4" />
-              WhatsApp
-            </a>
+          
           </div>
         </div>
 
