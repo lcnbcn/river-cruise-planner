@@ -97,28 +97,44 @@ const addToCalendar = (activity: ProgramaItem) => {
   const endDate = new Date(startDate);
   endDate.setHours(startDate.getHours() + 1);
   
-  // Formatear fechas para el calendario (formato ISO)
-  const formatDate = (date: Date) => {
+  // Formatear fechas para el formato ICS
+  const formatDateICS = (date: Date) => {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
   };
   
-  const startFormatted = formatDate(startDate);
-  const endFormatted = formatDate(endDate);
+  const startFormatted = formatDateICS(startDate);
+  const endFormatted = formatDateICS(endDate);
   
-  // Crear el evento de calendario
-  const event = {
-    title: encodeURIComponent(activity.actividad),
-    start: startFormatted,
-    end: endFormatted,
-    description: encodeURIComponent(activity.obs || ''),
-    location: encodeURIComponent('MS Charles Dickens - Köln, Alemania')
-  };
+  // Crear archivo ICS
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//MS Charles Dickens//Cruise Schedule//ES',
+    'BEGIN:VEVENT',
+    `DTSTART:${startFormatted}`,
+    `DTEND:${endFormatted}`,
+    `SUMMARY:${activity.actividad}`,
+    `DESCRIPTION:${activity.obs || ''}`,
+    'LOCATION:MS Charles Dickens - Köln\\, Alemania',
+    `UID:${Date.now()}@cruise-schedule.com`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
   
-  // Crear URL para Google Calendar (funciona en la mayoría de dispositivos)
-  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${event.title}&dates=${event.start}/${event.end}&details=${event.description}&location=${event.location}`;
+  // Crear blob y URL para descargar
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
   
-  // Abrir en nueva ventana
-  window.open(googleCalendarUrl, '_blank');
+  // Crear enlace de descarga temporal
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  // Limpiar URL
+  URL.revokeObjectURL(url);
 };
 
 export default function CruiseSchedule() {
@@ -268,20 +284,21 @@ export default function CruiseSchedule() {
                             </h3>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => addToCalendar(item)}
-                            className="h-8 w-8 p-0"
-                            title="Agregar al calendario"
-                          >
-                            <Calendar className="h-4 w-4" />
-                          </Button>
-                          <Badge {...getActivityBadge(item.tipo_actividad)} className="self-start">
-                            {getActivityBadge(item.tipo_actividad).label}
-                          </Badge>
-                        </div>
+                        <Badge {...getActivityBadge(item.tipo_actividad)} className="self-start">
+                          {getActivityBadge(item.tipo_actividad).label}
+                        </Badge>
+                      </div>
+                      
+                      <div className="flex justify-end mb-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => addToCalendar(item)}
+                          className="gap-2"
+                        >
+                          <Calendar className="h-4 w-4" />
+                          Añadir a calendario
+                        </Button>
                       </div>
                      
                      <div className="text-muted-foreground text-sm sm:text-base">
