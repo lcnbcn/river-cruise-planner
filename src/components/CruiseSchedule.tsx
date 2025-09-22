@@ -355,12 +355,32 @@ export default function CruiseSchedule() {
                   <Card key={index} className="border-l-4 border-l-accent">
                     <CardContent className="p-4">
                       <h3 className="font-semibold text-foreground mb-2">{destacado.lugar}</h3>
-                      <p className="text-sm text-muted-foreground mb-2">{destacado.descripcion}</p>
+                      <p className="text-sm text-muted-foreground mb-3">{destacado.descripcion}</p>
                       {destacado.direccion && (
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {destacado.direccion}
-                        </p>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <MapPin className="h-4 w-4 mr-2" />
+                              Ver ubicación en mapa
+                              <ExternalLink className="h-4 w-4 ml-2" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md px-3">
+                            <DialogHeader>
+                              <DialogTitle>Abrir ubicación en:</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid grid-cols-1 gap-3 py-4">
+                              <Button
+                                variant="outline"
+                                onClick={() => window.open(destacado.direccion, '_blank')}
+                                className="justify-start gap-3"
+                              >
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/512px-Google_Maps_Logo_2020.svg.png" alt="Google Maps" className="w-6 h-6" />
+                                Google Maps
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       )}
                     </CardContent>
                   </Card>
