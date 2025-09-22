@@ -450,60 +450,61 @@ export default function CruiseSchedule() {
           </div>
         </div>
 
-        {/* Sección Contactos */}
-        <div className="bg-card rounded-lg p-6 shadow-sm border">
-          <h2 className="text-xl font-bold text-foreground mb-4">Contactos</h2>
-          
-          {/* Contacto del Barco */}
-          <div className="mb-6">
-            <h3 className="font-semibold text-foreground mb-2">Barco – MS Charles Dickens</h3>
-            <div className="flex items-center gap-4 mb-3">
-              <span className="text-muted-foreground">+49 152 09349674</span>
-            </div>
-            <div className="flex gap-2">
-              <a
-                href="tel:+4915209349674"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm"
-              >
-                <Phone className="w-4 h-4" />
-                Llamar
-              </a>
-              <a
-                href="https://wa.me/4915209349674"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
-              >
-                <MessageCircle className="w-4 h-4" />
-                WhatsApp
-              </a>
-            </div>
-          </div>
+      </div>
 
-          {/* Contacto de Emergencias */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-2">Emergencias CATAI</h3>
-            <div className="flex items-center gap-4 mb-3">
-              <span className="text-muted-foreground">+34 644 02 67 81</span>
-            </div>
-            <div className="flex gap-2">
-              <a
-                href="tel:+34644026781"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors text-sm"
-              >
-                <Phone className="w-4 h-4" />
-                Llamar
-              </a>
-              <a
-                href="https://wa.me/34644026781"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
-              >
-                <MessageCircle className="w-4 h-4" />
-                WhatsApp
-              </a>
-            </div>
+      {/* Sección Contactos - Fuera del container */}
+      <div className="bg-card rounded-lg p-6 shadow-sm border mx-6 mb-6">
+        <h2 className="text-xl font-bold text-foreground mb-4">Contactos</h2>
+        
+        {/* Contacto del Barco */}
+        <div className="mb-6">
+          <h3 className="font-semibold text-foreground mb-2">Barco – MS Charles Dickens</h3>
+          <div className="flex items-center gap-4 mb-3">
+            <span className="text-muted-foreground">+49 152 09349674</span>
+          </div>
+          <div className="flex gap-2">
+            <a
+              href="tel:+4915209349674"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm"
+            >
+              <Phone className="w-4 h-4" />
+              Llamar
+            </a>
+            <a
+              href="https://wa.me/4915209349674"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
+            >
+              <MessageCircle className="w-4 h-4" />
+              WhatsApp
+            </a>
+          </div>
+        </div>
+
+        {/* Contacto de Emergencias */}
+        <div>
+          <h3 className="font-semibold text-foreground mb-2">Emergencias CATAI</h3>
+          <div className="flex items-center gap-4 mb-3">
+            <span className="text-muted-foreground">+34 644 02 67 81</span>
+          </div>
+          <div className="flex gap-2">
+            <a
+              href="tel:+34644026781"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors text-sm"
+            >
+              <Phone className="w-4 h-4" />
+              Llamar
+            </a>
+            <a
+              href="https://wa.me/34644026781"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
+            >
+              <MessageCircle className="w-4 h-4" />
+              WhatsApp
+            </a>
           </div>
         </div>
       </div>
