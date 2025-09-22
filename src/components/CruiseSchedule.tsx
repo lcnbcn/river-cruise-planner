@@ -284,7 +284,7 @@ export default function CruiseSchedule() {
                             </h3>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 self-start">
+                        <div className="flex items-center gap-3 self-start p-3 bg-muted/30 rounded-lg">
                           <Badge {...getActivityBadge(item.tipo_actividad)}>
                             {getActivityBadge(item.tipo_actividad).label}
                           </Badge>
