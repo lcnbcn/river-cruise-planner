@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Clock, MapPin, Anchor, ExternalLink } from "lucide-react";
+import { Clock, MapPin, Anchor, ExternalLink, Calendar } from "lucide-react";
 import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -83,6 +83,42 @@ const getActivityBadge = (type: string) => {
     variant: "outline" as const, 
     label: type || "A bordo" 
   };
+};
+
+const addToCalendar = (activity: ProgramaItem) => {
+  const today = new Date();
+  const [hours, minutes] = activity.hora.split(':').map(Number);
+  
+  // Crear fecha de inicio
+  const startDate = new Date(today);
+  startDate.setHours(hours, minutes, 0, 0);
+  
+  // Crear fecha de fin (1 hora después)
+  const endDate = new Date(startDate);
+  endDate.setHours(startDate.getHours() + 1);
+  
+  // Formatear fechas para el calendario (formato ISO)
+  const formatDate = (date: Date) => {
+    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  };
+  
+  const startFormatted = formatDate(startDate);
+  const endFormatted = formatDate(endDate);
+  
+  // Crear el evento de calendario
+  const event = {
+    title: encodeURIComponent(activity.actividad),
+    start: startFormatted,
+    end: endFormatted,
+    description: encodeURIComponent(activity.obs || ''),
+    location: encodeURIComponent('MS Charles Dickens - Köln, Alemania')
+  };
+  
+  // Crear URL para Google Calendar (funciona en la mayoría de dispositivos)
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${event.title}&dates=${event.start}/${event.end}&details=${event.description}&location=${event.location}`;
+  
+  // Abrir en nueva ventana
+  window.open(googleCalendarUrl, '_blank');
 };
 
 export default function CruiseSchedule() {
@@ -222,20 +258,31 @@ export default function CruiseSchedule() {
                 <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
                   <CardContent className="p-4 sm:p-6">
                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-                       <div className="flex items-center gap-3 flex-1">
-                         <div className="bg-primary text-primary-foreground rounded-lg p-2 text-lg font-mono font-bold min-w-[60px] text-center">
-                           {item.hora}
-                         </div>
-                         <div className="flex-1">
-                           <h3 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                             {item.actividad}
-                           </h3>
-                         </div>
-                       </div>
-                       <Badge {...getActivityBadge(item.tipo_actividad)} className="self-start">
-                         {getActivityBadge(item.tipo_actividad).label}
-                       </Badge>
-                     </div>
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="bg-primary text-primary-foreground rounded-lg p-2 text-lg font-mono font-bold min-w-[60px] text-center">
+                            {item.hora}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                              {item.actividad}
+                            </h3>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => addToCalendar(item)}
+                            className="h-8 w-8 p-0"
+                            title="Agregar al calendario"
+                          >
+                            <Calendar className="h-4 w-4" />
+                          </Button>
+                          <Badge {...getActivityBadge(item.tipo_actividad)} className="self-start">
+                            {getActivityBadge(item.tipo_actividad).label}
+                          </Badge>
+                        </div>
+                      </div>
                      
                      <div className="text-muted-foreground text-sm sm:text-base">
                        {item.obs}
