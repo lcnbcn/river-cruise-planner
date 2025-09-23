@@ -126,7 +126,7 @@ const addToCalendar = (activity: ProgramaItem) => {
   const startFormatted = formatDateICS(startDate);
   const endFormatted = formatDateICS(endDate);
   
-  // Crear contenido ICS universal
+  // Crear contenido ICS universal compatible con todos los calendarios
   const icsContent = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -147,55 +147,72 @@ const addToCalendar = (activity: ProgramaItem) => {
     'END:VCALENDAR'
   ].join('\r\n');
   
-  // Detectar si es un dispositivo móvil
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const fileName = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
   
-  if (isMobile) {
-    // En dispositivos móviles: usar data URL que funciona universalmente
-    const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
+  // Detectar navegador para usar el método apropiado
+  const isChrome = /Chrome/i.test(navigator.userAgent) && /Google Inc/i.test(navigator.vendor);
+  const isFirefox = /Firefox/i.test(navigator.userAgent);
+  const isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent);
+  const isEdgeOrIE = /msie\s|trident\/|edge\//i.test(navigator.userAgent);
+  
+  if (isEdgeOrIE && (window.navigator as any).msSaveOrOpenBlob) {
+    // Internet Explorer/Edge legacy
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    (window.navigator as any).msSaveOrOpenBlob(blob, fileName);
     
-    // Crear enlace temporal para abrir
+  } else if (isChrome || isFirefox) {
+    // Chrome y Firefox: usar blob URL con descarga forzada
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    
     const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+    link.href = url;
+    link.download = fileName;
     link.style.display = 'none';
-    document.body.appendChild(link);
     
-    // Intentar abrir el archivo
+    // Añadir al DOM, hacer clic y remover
+    document.body.appendChild(link);
     link.click();
     
-    // Cleanup
+    // Cleanup después de un momento
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+    
+  } else if (isSafari) {
+    // Safari: usar data URL que funciona mejor en Safari
+    const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
+    
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = fileName;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
     setTimeout(() => {
       document.body.removeChild(link);
     }, 100);
     
   } else {
-    // En desktop: usar blob que funciona en todos los navegadores modernos
-    const blob = new Blob([icsContent], { 
-      type: 'text/calendar;charset=utf-8' 
-    });
+    // Fallback para otros navegadores
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
     
-    // Verificar si el navegador soporta la API moderna
-    if ((window.navigator as any).msSaveOrOpenBlob) {
-      // Internet Explorer/Edge legacy
-      (window.navigator as any).msSaveOrOpenBlob(blob, `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`);
-    } else {
-      // Navegadores modernos (Chrome, Firefox, Safari, Edge nuevo)
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      
-      link.click();
-      
-      // Cleanup
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      }, 100);
-    }
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }, 100);
   }
 };
 
