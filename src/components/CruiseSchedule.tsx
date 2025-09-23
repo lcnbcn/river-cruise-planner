@@ -167,8 +167,8 @@ const addToCalendar = (activity: ProgramaItem) => {
     const details = encodeURIComponent(activity.obs || '');
     const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
     const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
-    toast.info('Abriendo Google Calendar...');
-    window.location.href = gcalUrl; // navegar en misma pestaña mejora compatibilidad
+    toast.success('Abriendo Google Calendar...');
+    window.open(gcalUrl, '_blank');
     return;
   }
 
@@ -178,15 +178,15 @@ const addToCalendar = (activity: ProgramaItem) => {
     const details = encodeURIComponent(activity.obs || '');
     const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
     const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
-    toast.info('Abriendo Google Calendar...');
-    window.location.href = gcalUrl;
+    toast.success('Abriendo Google Calendar...');
+    window.open(gcalUrl, '_blank');
     return;
   }
 
   // 2) iOS Safari o iOS Chrome (CriOS): usar data URL para que Calendario abra el .ics
   if (isIOS) {
     const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
-    toast.info('Abriendo Calendario...');
+    toast.success('Abriendo Calendario...');
     window.location.href = dataUrl;
     return;
   }
