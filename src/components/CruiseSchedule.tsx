@@ -7,15 +7,6 @@ import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 
-// Datos reales basados en el formato de RiverOk
-const shipName = "MS Charles Dickens";
-const currentDestination = "Colonia";
-const embarkationInfo = {
-  location: "Puerto Fluvial - Rambla de las Américas, Colonia del Sacramento",
-  allAboard: "20:15",
-  departure: "20:30"
-};
-
 type ProgramaItem = {
   id: number;
   hora: string;
@@ -30,6 +21,19 @@ type DestacadoItem = {
   descripcion: string;
   direccion: string;
   img: string;
+};
+
+type BarcoInfo = {
+  id: number;
+  barco: string;
+  dia: string;
+  temperatura1: number;
+  ciudad1: string;
+  temperatura2: number | null;
+  ciudad2: string | null;
+  atraque: string;
+  todos_abordos: string;
+  salida: string;
 };
 
 // Convierte enlaces de Google Maps (q, query, place, dir, @coords) a una consulta válida para Apple Maps
@@ -156,8 +160,10 @@ const addToCalendar = (activity: ProgramaItem) => {
 export default function CruiseSchedule() {
   const [schedule, setSchedule] = useState<ProgramaItem[]>([]);
   const [destacados, setDestacados] = useState<DestacadoItem[]>([]);
+  const [barcoInfo, setBarcoInfo] = useState<BarcoInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingDestacados, setLoadingDestacados] = useState(true);
+  const [loadingBarco, setLoadingBarco] = useState(true);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -198,8 +204,29 @@ export default function CruiseSchedule() {
       }
     };
 
+    const fetchBarcoInfo = async () => {
+      try {
+        const { data, error } = await (supabase as any)
+          .from('barco')
+          .select('id, barco, dia, temperatura1, ciudad1, temperatura2, ciudad2, atraque, todos_abordos, salida')
+          .eq('id', 1)
+          .single();
+
+        if (error) {
+          console.error('Error fetching barco info:', error);
+        } else {
+          setBarcoInfo(data);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoadingBarco(false);
+      }
+    };
+
     fetchSchedule();
     fetchDestacados();
+    fetchBarcoInfo();
   }, []);
 
   return (
@@ -215,7 +242,7 @@ export default function CruiseSchedule() {
         <div className="absolute inset-0 flex items-center justify-center text-center">
           <div className="text-primary-foreground">
             <h1 className="text-5xl font-bold mb-2 tracking-wide">
-              {shipName}
+              {loadingBarco ? "Cargando..." : barcoInfo?.barco || "MS Charles Dickens"}
             </h1>
             <div className="flex justify-center gap-4 mb-4">
               <Anchor className="h-8 w-8" />
@@ -227,15 +254,32 @@ export default function CruiseSchedule() {
               Programa diario
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-2 mt-4 text-lg opacity-90">
-              <span>{new Date().toLocaleDateString('es-ES', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}</span>
+              <span>
+                {loadingBarco ? "Cargando fecha..." : barcoInfo?.dia ? 
+                  new Date(barcoInfo.dia).toLocaleDateString('es-ES', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  }) : 
+                  new Date().toLocaleDateString('es-ES', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })
+                }
+              </span>
               <span className="hidden sm:inline">•</span>
               <span className="flex items-center gap-2">
-                🌤️ 18°C - Köln, Alemania
+                {loadingBarco ? "Cargando..." : (
+                  <>
+                    🌤️ {barcoInfo?.temperatura1 || 18}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
+                    {barcoInfo?.temperatura2 && barcoInfo?.ciudad2 && (
+                      <span> / {barcoInfo.temperatura2}°C - {barcoInfo.ciudad2}</span>
+                    )}
+                  </>
+                )}
               </span>
             </div>
           </div>
@@ -254,11 +298,11 @@ export default function CruiseSchedule() {
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
               <MapPin className="h-4 w-4" />
-              <span>Konrad‑Adenauer‑Ufer 3, 50668 Köln</span>
+              <span>{loadingBarco ? "Cargando ubicación..." : barcoInfo?.atraque || "Konrad‑Adenauer‑Ufer 3, 50668 Köln"}</span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-4 w-4" />
-              <span>Todos a bordo: <span className="font-bold text-foreground">20:15</span> | Salida: <span className="font-bold text-foreground">20:30</span></span>
+              <span>Todos a bordo: <span className="font-bold text-foreground">{loadingBarco ? "..." : barcoInfo?.todos_abordos || "20:15"}</span> | Salida: <span className="font-bold text-foreground">{loadingBarco ? "..." : barcoInfo?.salida || "20:30"}</span></span>
             </div>
           </div>
           <div className="mt-4">
@@ -278,7 +322,11 @@ export default function CruiseSchedule() {
                  <div className="grid grid-cols-1 gap-3 py-4">
                    <Button
                      variant="outline"
-                     onClick={() => window.open(`https://maps.apple.com/?q=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
+                     onClick={() => {
+                       const location = barcoInfo?.atraque || "Konrad‑Adenauer‑Ufer 3, 50668 Köln";
+                       const query = googleToAppleQuery(location, location);
+                       window.open(`https://maps.apple.com/?q=${encodeURIComponent(query)}`, '_blank');
+                     }}
                      className="justify-start gap-3"
                    >
                      <img src="https://developer.apple.com/assets/elements/icons/maps/maps-96x96_2x.png" alt="Apple Maps" className="w-6 h-6" />
@@ -286,7 +334,11 @@ export default function CruiseSchedule() {
                    </Button>
                    <Button
                      variant="outline"
-                     onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=Konrad‑Adenauer‑Ufer+3,+50668+Köln`, '_blank')}
+                     onClick={() => {
+                       const location = barcoInfo?.atraque || "Konrad‑Adenauer‑Ufer 3, 50668 Köln";
+                       const url = location && /^https?:\/\//i.test(location) ? location : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+                       window.open(url, '_blank');
+                     }}
                      className="justify-start gap-3"
                    >
                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/512px-Google_Maps_Logo_2020.svg.png" alt="Google Maps" className="w-6 h-6" />
@@ -376,7 +428,7 @@ export default function CruiseSchedule() {
             {/* Highlights Section */}
             <div className="mt-12">
               <h2 className="text-3xl font-bold text-foreground mb-6">
-                🌟 Qué no perderse en {currentDestination}
+                🌟 Qué no perderse en {loadingBarco ? "..." : barcoInfo?.ciudad1 || "Colonia"}
               </h2>
               
               <div className="grid md:grid-cols-2 gap-4">
