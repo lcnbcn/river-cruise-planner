@@ -6,6 +6,7 @@ import { Clock, MapPin, Anchor, ExternalLink, Calendar, Phone, MessageCircle } f
 import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type ProgramaItem = {
   id: number;
@@ -166,13 +167,26 @@ const addToCalendar = (activity: ProgramaItem) => {
     const details = encodeURIComponent(activity.obs || '');
     const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
     const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
+    toast.info('Abriendo Google Calendar...');
     window.location.href = gcalUrl; // navegar en misma pestaña mejora compatibilidad
+    return;
+  }
+
+  // 1b) Chrome (escritorio): abrir Google Calendar web
+  if (isChrome && !isIOS && !isAndroid) {
+    const title = encodeURIComponent(activity.actividad);
+    const details = encodeURIComponent(activity.obs || '');
+    const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
+    const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
+    toast.info('Abriendo Google Calendar...');
+    window.location.href = gcalUrl;
     return;
   }
 
   // 2) iOS Safari o iOS Chrome (CriOS): usar data URL para que Calendario abra el .ics
   if (isIOS) {
     const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
+    toast.info('Abriendo Calendario...');
     window.location.href = dataUrl;
     return;
   }
