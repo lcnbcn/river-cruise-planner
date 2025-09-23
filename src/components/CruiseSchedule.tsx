@@ -105,6 +105,7 @@ const getActivityBadge = (type: string) => {
   };
 };
 
+// Universal function to add activity to calendar - opens native calendar apps
 const addToCalendar = (activity: ProgramaItem) => {
   const today = new Date();
   const [hours, minutes] = activity.hora.split(':').map(Number);
@@ -117,44 +118,70 @@ const addToCalendar = (activity: ProgramaItem) => {
   const endDate = new Date(startDate);
   endDate.setHours(startDate.getHours() + 1);
   
-  // Formatear fechas para el formato ICS
+  // Detectar plataforma
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isIOS = /iphone|ipad|ipod/.test(userAgent);
+  const isAndroid = /android/.test(userAgent);
+  
+  // Formatear fechas para diferentes plataformas
   const formatDateICS = (date: Date) => {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
   };
   
-  const startFormatted = formatDateICS(startDate);
-  const endFormatted = formatDateICS(endDate);
-  
-  // Crear archivo ICS
-  const icsContent = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//MS Charles Dickens//Cruise Schedule//ES',
-    'BEGIN:VEVENT',
-    `DTSTART:${startFormatted}`,
-    `DTEND:${endFormatted}`,
-    `SUMMARY:${activity.actividad}`,
-    `DESCRIPTION:${activity.obs || ''}`,
-    'LOCATION:MS Charles Dickens - Köln\\, Alemania',
-    `UID:${Date.now()}@cruise-schedule.com`,
-    'END:VEVENT',
-    'END:VCALENDAR'
-  ].join('\r\n');
-  
-  // Crear blob y URL para descargar
-  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  
-  // Crear enlace de descarga temporal
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  
-  // Limpiar URL
-  URL.revokeObjectURL(url);
+  if (isIOS) {
+    // iOS: Usar URL scheme calshow para abrir Calendario nativo
+    const startTime = encodeURIComponent(startDate.toISOString());
+    const endTime = encodeURIComponent(endDate.toISOString());
+    const title = encodeURIComponent(activity.actividad);
+    const notes = encodeURIComponent(activity.obs || '');
+    const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
+    
+    const calendarUrl = `calshow:?start_date=${startTime}&end_date=${endTime}&title=${title}&notes=${notes}&location=${location}`;
+    window.location.href = calendarUrl;
+    
+  } else if (isAndroid) {
+    // Android: Usar Google Calendar para abrir calendario nativo
+    const startTime = formatDateICS(startDate);
+    const endTime = formatDateICS(endDate);
+    const title = encodeURIComponent(activity.actividad);
+    const details = encodeURIComponent(activity.obs || '');
+    const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
+    
+    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=${details}&location=${location}`;
+    window.open(calendarUrl, '_blank');
+    
+  } else {
+    // Desktop/Web: Descargar archivo ICS como respaldo
+    const startFormatted = formatDateICS(startDate);
+    const endFormatted = formatDateICS(endDate);
+    
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//MS Charles Dickens//Cruise Schedule//ES',
+      'BEGIN:VEVENT',
+      `DTSTART:${startFormatted}`,
+      `DTEND:${endFormatted}`,
+      `SUMMARY:${activity.actividad}`,
+      `DESCRIPTION:${activity.obs || ''}`,
+      'LOCATION:MS Charles Dickens - Köln\\, Alemania',
+      `UID:${Date.now()}@cruise-schedule.com`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+    
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    URL.revokeObjectURL(url);
+  }
 };
 
 export default function CruiseSchedule() {
