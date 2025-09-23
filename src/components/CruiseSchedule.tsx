@@ -149,71 +149,55 @@ const addToCalendar = (activity: ProgramaItem) => {
   
   const fileName = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
   
-  // Detectar navegador para usar el método apropiado
-  const isChrome = /Chrome/i.test(navigator.userAgent) && /Google Inc/i.test(navigator.vendor);
-  const isFirefox = /Firefox/i.test(navigator.userAgent);
-  const isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent);
-  const isEdgeOrIE = /msie\s|trident\/|edge\//i.test(navigator.userAgent);
-  
+  // Detección de plataforma/navegador
+  const ua = navigator.userAgent;
+  const vendor = (navigator as any).vendor || '';
+  const isAndroid = /Android/i.test(ua);
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const isCriOS = /CriOS/i.test(ua); // Chrome en iOS
+  const isChrome = /Chrome/i.test(ua) && /Google Inc/i.test(vendor);
+  const isFirefox = /Firefox/i.test(ua);
+  const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua);
+  const isEdgeOrIE = /msie\s|trident\/|edge\//i.test(ua);
+
+  // 1) Android (incluye Chrome Android): abrir Google Calendar (app/web)
+  if (isAndroid) {
+    const title = encodeURIComponent(activity.actividad);
+    const details = encodeURIComponent(activity.obs || '');
+    const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
+    const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
+    window.location.href = gcalUrl; // navegar en misma pestaña mejora compatibilidad
+    return;
+  }
+
+  // 2) iOS Safari o iOS Chrome (CriOS): usar data URL para que Calendario abra el .ics
+  if (isIOS) {
+    const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
+    window.location.href = dataUrl;
+    return;
+  }
+
+  // 3) Edge/IE legado
   if (isEdgeOrIE && (window.navigator as any).msSaveOrOpenBlob) {
-    // Internet Explorer/Edge legacy
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
     (window.navigator as any).msSaveOrOpenBlob(blob, fileName);
-    
-  } else if (isChrome || isFirefox) {
-    // Chrome y Firefox: usar blob URL con descarga forzada
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    link.style.display = 'none';
-    
-    // Añadir al DOM, hacer clic y remover
-    document.body.appendChild(link);
-    link.click();
-    
-    // Cleanup después de un momento
-    setTimeout(() => {
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    }, 100);
-    
-  } else if (isSafari) {
-    // Safari: usar data URL que funciona mejor en Safari
-    const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
-    
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = fileName;
-    link.style.display = 'none';
-    
-    document.body.appendChild(link);
-    link.click();
-    
-    setTimeout(() => {
-      document.body.removeChild(link);
-    }, 100);
-    
-  } else {
-    // Fallback para otros navegadores
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    link.style.display = 'none';
-    
-    document.body.appendChild(link);
-    link.click();
-    
-    setTimeout(() => {
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    }, 100);
+    return;
   }
+
+  // 4) Chrome/Firefox/Safari de escritorio y otros: usar Blob URL
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = fileName;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(() => {
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }, 100);
+
 };
 
 export default function CruiseSchedule() {
