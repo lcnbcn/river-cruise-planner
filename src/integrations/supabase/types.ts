@@ -86,6 +86,30 @@ export type Database = {
         }
         Relationships: []
       }
+      destacado: {
+        Row: {
+          descripcion: string | null
+          direccion: string | null
+          id: number
+          img: string | null
+          lugar: string | null
+        }
+        Insert: {
+          descripcion?: string | null
+          direccion?: string | null
+          id?: number
+          img?: string | null
+          lugar?: string | null
+        }
+        Update: {
+          descripcion?: string | null
+          direccion?: string | null
+          id?: number
+          img?: string | null
+          lugar?: string | null
+        }
+        Relationships: []
+      }
       dining_tables: {
         Row: {
           capacity: number | null
@@ -675,7 +699,7 @@ export type Database = {
       }
       l2_normalize: {
         Args: { "": string } | { "": unknown } | { "": unknown }
-        Returns: unknown
+        Returns: string
       }
       match_documents: {
         Args: { filter?: Json; match_count?: number; query_embedding: string }
