@@ -123,21 +123,41 @@ const addToCalendar = (activity: ProgramaItem) => {
   const isIOS = /iphone|ipad|ipod/.test(userAgent);
   const isAndroid = /android/.test(userAgent);
   
-  // Formatear fechas para diferentes plataformas
+  // Formatear fechas para ICS (formato correcto: YYYYMMDDTHHMMSSZ)
   const formatDateICS = (date: Date) => {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
   };
   
   if (isIOS) {
-    // iOS: Usar URL scheme calshow para abrir Calendario nativo
-    const startTime = encodeURIComponent(startDate.toISOString());
-    const endTime = encodeURIComponent(endDate.toISOString());
-    const title = encodeURIComponent(activity.actividad);
-    const notes = encodeURIComponent(activity.obs || '');
-    const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
+    // iOS: Usar data URL para que Safari abra el ICS correctamente
+    const startFormatted = formatDateICS(startDate);
+    const endFormatted = formatDateICS(endDate);
     
-    const calendarUrl = `calshow:?start_date=${startTime}&end_date=${endTime}&title=${title}&notes=${notes}&location=${location}`;
-    window.location.href = calendarUrl;
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//MS Charles Dickens//Cruise Schedule//ES',
+      'BEGIN:VEVENT',
+      `DTSTART:${startFormatted}`,
+      `DTEND:${endFormatted}`,
+      `SUMMARY:${activity.actividad}`,
+      `DESCRIPTION:${activity.obs || ''}`,
+      'LOCATION:MS Charles Dickens - Köln\\, Alemania',
+      `UID:${Date.now()}@cruise-schedule.com`,
+      'DTSTAMP:' + formatDateICS(new Date()),
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+    
+    // Crear data URL para iOS
+    const dataUrl = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     
   } else if (isAndroid) {
     // Android: Usar Google Calendar para abrir calendario nativo
@@ -166,6 +186,7 @@ const addToCalendar = (activity: ProgramaItem) => {
       `DESCRIPTION:${activity.obs || ''}`,
       'LOCATION:MS Charles Dickens - Köln\\, Alemania',
       `UID:${Date.now()}@cruise-schedule.com`,
+      'DTSTAMP:' + formatDateICS(new Date()),
       'END:VEVENT',
       'END:VCALENDAR'
     ].join('\r\n');
