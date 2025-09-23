@@ -105,7 +105,7 @@ const getActivityBadge = (type: string) => {
   };
 };
 
-// Universal function to add activity to calendar - opens native calendar apps
+// Universal function to add activity to calendar - works on all browsers
 const addToCalendar = (activity: ProgramaItem) => {
   const today = new Date();
   const [hours, minutes] = activity.hora.split(':').map(Number);
@@ -118,90 +118,84 @@ const addToCalendar = (activity: ProgramaItem) => {
   const endDate = new Date(startDate);
   endDate.setHours(startDate.getHours() + 1);
   
-  // Detectar plataforma
-  const userAgent = navigator.userAgent.toLowerCase();
-  const isIOS = /iphone|ipad|ipod/.test(userAgent);
-  const isAndroid = /android/.test(userAgent);
-  
   // Formatear fechas para ICS (formato correcto: YYYYMMDDTHHMMSSZ)
   const formatDateICS = (date: Date) => {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
   };
   
-  if (isIOS) {
-    // iOS: Usar data URL para que Safari abra el ICS correctamente
-    const startFormatted = formatDateICS(startDate);
-    const endFormatted = formatDateICS(endDate);
+  const startFormatted = formatDateICS(startDate);
+  const endFormatted = formatDateICS(endDate);
+  
+  // Crear contenido ICS universal
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//MS Charles Dickens//Cruise Schedule//ES',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `DTSTART:${startFormatted}`,
+    `DTEND:${endFormatted}`,
+    `DTSTAMP:${formatDateICS(new Date())}`,
+    `UID:${Date.now()}-${Math.random().toString(36).substr(2, 9)}@cruise-schedule.com`,
+    `SUMMARY:${activity.actividad}`,
+    `DESCRIPTION:${activity.obs || 'Actividad del crucero'}`,
+    'LOCATION:MS Charles Dickens - Köln\\, Alemania',
+    'STATUS:CONFIRMED',
+    'SEQUENCE:0',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+  
+  // Detectar si es un dispositivo móvil
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobile) {
+    // En dispositivos móviles: usar data URL que funciona universalmente
+    const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
     
-    const icsContent = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//MS Charles Dickens//Cruise Schedule//ES',
-      'BEGIN:VEVENT',
-      `DTSTART:${startFormatted}`,
-      `DTEND:${endFormatted}`,
-      `SUMMARY:${activity.actividad}`,
-      `DESCRIPTION:${activity.obs || ''}`,
-      'LOCATION:MS Charles Dickens - Köln\\, Alemania',
-      `UID:${Date.now()}@cruise-schedule.com`,
-      'DTSTAMP:' + formatDateICS(new Date()),
-      'END:VEVENT',
-      'END:VCALENDAR'
-    ].join('\r\n');
-    
-    // Crear data URL para iOS
-    const dataUrl = 'data:text/calendar;charset=utf8,' + encodeURIComponent(icsContent);
+    // Crear enlace temporal para abrir
     const link = document.createElement('a');
     link.href = dataUrl;
     link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-    link.target = '_blank';
+    link.style.display = 'none';
     document.body.appendChild(link);
+    
+    // Intentar abrir el archivo
     link.click();
-    document.body.removeChild(link);
     
-  } else if (isAndroid) {
-    // Android: Usar Google Calendar para abrir calendario nativo
-    const startTime = formatDateICS(startDate);
-    const endTime = formatDateICS(endDate);
-    const title = encodeURIComponent(activity.actividad);
-    const details = encodeURIComponent(activity.obs || '');
-    const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
-    
-    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=${details}&location=${location}`;
-    window.open(calendarUrl, '_blank');
+    // Cleanup
+    setTimeout(() => {
+      document.body.removeChild(link);
+    }, 100);
     
   } else {
-    // Desktop/Web: Descargar archivo ICS como respaldo
-    const startFormatted = formatDateICS(startDate);
-    const endFormatted = formatDateICS(endDate);
+    // En desktop: usar blob que funciona en todos los navegadores modernos
+    const blob = new Blob([icsContent], { 
+      type: 'text/calendar;charset=utf-8' 
+    });
     
-    const icsContent = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//MS Charles Dickens//Cruise Schedule//ES',
-      'BEGIN:VEVENT',
-      `DTSTART:${startFormatted}`,
-      `DTEND:${endFormatted}`,
-      `SUMMARY:${activity.actividad}`,
-      `DESCRIPTION:${activity.obs || ''}`,
-      'LOCATION:MS Charles Dickens - Köln\\, Alemania',
-      `UID:${Date.now()}@cruise-schedule.com`,
-      'DTSTAMP:' + formatDateICS(new Date()),
-      'END:VEVENT',
-      'END:VCALENDAR'
-    ].join('\r\n');
-    
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    URL.revokeObjectURL(url);
+    // Verificar si el navegador soporta la API moderna
+    if ((window.navigator as any).msSaveOrOpenBlob) {
+      // Internet Explorer/Edge legacy
+      (window.navigator as any).msSaveOrOpenBlob(blob, `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`);
+    } else {
+      // Navegadores modernos (Chrome, Firefox, Safari, Edge nuevo)
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      
+      link.click();
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+    }
   }
 };
 
