@@ -298,7 +298,7 @@ export default function CruiseSchedule() {
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
               <MapPin className="h-4 w-4" />
-              <span>{loadingBarco ? "Cargando ubicación..." : barcoInfo?.atraque || "Konrad‑Adenauer‑Ufer 3, 50668 Köln"}</span>
+              <span>{loadingBarco ? "Cargando ubicación..." : googleToAppleQuery(barcoInfo?.atraque || "", "Konrad‑Adenauer‑Ufer 3, 50668 Köln")}</span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-4 w-4" />
