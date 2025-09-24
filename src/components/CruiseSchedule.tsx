@@ -106,70 +106,109 @@ const getActivityBadge = (type: string) => {
   };
 };
 
-// Universal function to add activity to calendar - abre el calendario nativo cuando es posible
-const addToCalendar = (
-  activity: ProgramaItem,
-  eventDate?: string | Date | null,
-  locationOverride?: string
-) => {
-  // 1) Determinar la fecha base (prioriza fecha del barco si existe)
-  const baseDate = eventDate ? new Date(eventDate) : new Date();
-  const startDate = new Date(baseDate);
-  const [hours, minutes] = activity.hora.split(":").map(Number);
-
-  // Crear fecha de inicio/fin en hora local del dispositivo
+// Universal function to add activity to calendar - works on all browsers
+const addToCalendar = (activity: ProgramaItem) => {
+  const today = new Date();
+  const [hours, minutes] = activity.hora.split(':').map(Number);
+  
+  // Crear fecha de inicio
+  const startDate = new Date(today);
   startDate.setHours(hours, minutes, 0, 0);
+  
+  // Crear fecha de fin (1 hora después)
   const endDate = new Date(startDate);
   endDate.setHours(startDate.getHours() + 1);
-
-  // Formato ICS "floating" (sin Z) para respetar la zona horaria local del usuario
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const formatICSLocal = (d: Date) =>
-    `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
-
-  const start = formatICSLocal(startDate);
-  const end = formatICSLocal(endDate);
-
-  const title = activity.actividad || "Actividad";
-  const details = activity.obs || "";
-  const location = locationOverride || "MS Charles Dickens - Köln, Alemania";
-  const filenameBase = activity.actividad.replace(/[^a-z0-9]/gi, "_").toLowerCase() || "evento";
-
-  // URL del Edge Function que genera el .ics dinámico
-  const base = "https://vwxzsigjpjfsucucxrxo.functions.supabase.co/ics-event";
-  const qs = new URLSearchParams({
-    text: title,
-    details,
-    location,
-    start,
-    end,
-    filename: filenameBase,
-  }).toString();
-  const httpsUrl = `${base}?${qs}`;
-  const webcalUrl = httpsUrl.replace(/^https?:\/\//, "webcal://");
-
+  
+  // Formatear fechas para ICS (formato correcto: YYYYMMDDTHHMMSSZ)
+  const formatDateICS = (date: Date) => {
+    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  };
+  
+  const startFormatted = formatDateICS(startDate);
+  const endFormatted = formatDateICS(endDate);
+  
+  // Crear contenido ICS universal compatible con todos los calendarios
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//MS Charles Dickens//Cruise Schedule//ES',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `DTSTART:${startFormatted}`,
+    `DTEND:${endFormatted}`,
+    `DTSTAMP:${formatDateICS(new Date())}`,
+    `UID:${Date.now()}-${Math.random().toString(36).substr(2, 9)}@cruise-schedule.com`,
+    `SUMMARY:${activity.actividad}`,
+    `DESCRIPTION:${activity.obs || 'Actividad del crucero'}`,
+    'LOCATION:MS Charles Dickens - Köln\\, Alemania',
+    'STATUS:CONFIRMED',
+    'SEQUENCE:0',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+  
+  const fileName = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+  
+  // Detección específica de navegador
   const ua = navigator.userAgent;
   const isIOS = /iPhone|iPad|iPod/i.test(ua);
-  const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua) && !/CriOS/i.test(ua);
-
-  console.log("🔍 Debug - UA:", ua);
-  console.log("🔍 Debug - iOS:", isIOS, "Safari:", isSafari);
-
-  // Safari (iOS y macOS): abrir directamente el .ics por HTTPS (suele abrir Calendario)
-  if (isSafari || isIOS) {
-    toast.info("Abriendo Calendario nativo...");
-    window.location.href = httpsUrl;
+  const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua) && !/CriOS/i.test(ua); // Solo Safari real, no Chrome
+  
+  console.log('🔍 Debug - Navegador:', ua);
+  console.log('🔍 Debug - Es iOS:', isIOS);
+  console.log('🔍 Debug - Es Safari:', isSafari);
+  
+  // Para iOS: usar data URL con ICS para calendario nativo
+  if (isIOS) {
+    const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
+    toast.success('Abriendo Calendario...');
+    window.location.href = dataUrl;
     return;
   }
 
-  // Otros navegadores (Chrome, Firefox, Edge): intentar esquema webcal para abrir app nativa
-  try {
-    toast.info("Abriendo tu calendario nativo...");
-    window.location.href = webcalUrl;
-  } catch (e) {
-    console.warn("Webcal falló, usando HTTPS como respaldo", e);
-    window.location.href = httpsUrl;
+  // Solo Safari desktop: descargar ICS para calendario nativo
+  if (isSafari) {
+    console.log('🔍 Debug - Descargando ICS para Safari');
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+    toast.success('Archivo descargado. Se abrirá en tu calendario nativo.');
+    return;
   }
+
+  // Todos los demás navegadores (Chrome, Firefox, Edge): usar Google Calendar
+  const title = encodeURIComponent(activity.actividad);
+  const details = encodeURIComponent(activity.obs || '');
+  const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
+  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
+  
+  console.log('🔍 Debug - Usando Google Calendar para:', ua);
+  console.log('🔍 Debug - URL:', googleCalendarUrl);
+  
+  try {
+    const newWindow = window.open(googleCalendarUrl, '_blank');
+    if (newWindow === null || typeof newWindow === 'undefined') {
+      toast.error('Las ventanas emergentes están bloqueadas. Redirigiendo...');
+      window.location.href = googleCalendarUrl;
+    } else {
+      toast.success('Abriendo Google Calendar...');
+    }
+  } catch (error) {
+    console.error('❌ Error:', error);
+    window.location.href = googleCalendarUrl;
+  }
+
+
 };
 
 export default function CruiseSchedule() {
@@ -397,13 +436,7 @@ export default function CruiseSchedule() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                              addToCalendar(
-                                item,
-                                barcoInfo?.dia,
-                                `MS ${barcoInfo?.barco || "Charles Dickens"} - ${barcoInfo?.ciudad1 || "Köln, Alemania"}`
-                              )
-                            }
+                            onClick={() => addToCalendar(item)}
                             className="gap-2 whitespace-nowrap text-xs"
                           >
                             <Calendar className="h-4 w-4" />
