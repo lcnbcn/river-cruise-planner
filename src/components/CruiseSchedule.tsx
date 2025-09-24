@@ -107,12 +107,17 @@ const getActivityBadge = (type: string) => {
 };
 
 // Universal function to add activity to calendar - abre el calendario nativo cuando es posible
-const addToCalendar = (activity: ProgramaItem) => {
-  const today = new Date();
+const addToCalendar = (
+  activity: ProgramaItem,
+  eventDate?: string | Date | null,
+  locationOverride?: string
+) => {
+  // 1) Determinar la fecha base (prioriza fecha del barco si existe)
+  const baseDate = eventDate ? new Date(eventDate) : new Date();
+  const startDate = new Date(baseDate);
   const [hours, minutes] = activity.hora.split(":").map(Number);
 
   // Crear fecha de inicio/fin en hora local del dispositivo
-  const startDate = new Date(today);
   startDate.setHours(hours, minutes, 0, 0);
   const endDate = new Date(startDate);
   endDate.setHours(startDate.getHours() + 1);
@@ -127,7 +132,7 @@ const addToCalendar = (activity: ProgramaItem) => {
 
   const title = activity.actividad || "Actividad";
   const details = activity.obs || "";
-  const location = "MS Charles Dickens - Köln, Alemania";
+  const location = locationOverride || "MS Charles Dickens - Köln, Alemania";
   const filenameBase = activity.actividad.replace(/[^a-z0-9]/gi, "_").toLowerCase() || "evento";
 
   // URL del Edge Function que genera el .ics dinámico
@@ -392,7 +397,13 @@ export default function CruiseSchedule() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => addToCalendar(item)}
+                            onClick={() =>
+                              addToCalendar(
+                                item,
+                                barcoInfo?.dia,
+                                `MS ${barcoInfo?.barco || "Charles Dickens"} - ${barcoInfo?.ciudad1 || "Köln, Alemania"}`
+                              )
+                            }
                             className="gap-2 whitespace-nowrap text-xs"
                           >
                             <Calendar className="h-4 w-4" />

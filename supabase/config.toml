@@ -1,1 +1,4 @@
 project_id = "vwxzsigjpjfsucucxrxo"
+
+[functions.ics-event]
+verify_jwt = false
