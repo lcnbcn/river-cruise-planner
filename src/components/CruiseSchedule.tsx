@@ -153,11 +153,11 @@ const addToCalendar = (activity: ProgramaItem) => {
   // Detección específica de navegador
   const ua = navigator.userAgent;
   const isIOS = /iPhone|iPad|iPod/i.test(ua);
-  const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua); // Chrome pero no Edge
+  const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua) && !/CriOS/i.test(ua); // Solo Safari real, no Chrome
   
   console.log('🔍 Debug - Navegador:', ua);
   console.log('🔍 Debug - Es iOS:', isIOS);
-  console.log('🔍 Debug - Es Chrome:', isChrome);
+  console.log('🔍 Debug - Es Safari:', isSafari);
   
   // Para iOS: usar data URL con ICS para calendario nativo
   if (isIOS) {
@@ -167,47 +167,46 @@ const addToCalendar = (activity: ProgramaItem) => {
     return;
   }
 
-  // Solo Chrome: usar Google Calendar
-  if (isChrome) {
-    const title = encodeURIComponent(activity.actividad);
-    const details = encodeURIComponent(activity.obs || '');
-    const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
-    const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
-    
-    console.log('🔍 Debug - Usando Google Calendar para Chrome');
-    console.log('🔍 Debug - URL:', googleCalendarUrl);
-    
-    try {
-      const newWindow = window.open(googleCalendarUrl, '_blank');
-      if (newWindow === null || typeof newWindow === 'undefined') {
-        toast.error('Las ventanas emergentes están bloqueadas. Permitiendo ventanas emergentes...');
-        window.location.href = googleCalendarUrl;
-      } else {
-        toast.success('Abriendo Google Calendar...');
-      }
-    } catch (error) {
-      console.error('❌ Error:', error);
-      window.location.href = googleCalendarUrl;
-    }
+  // Solo Safari desktop: descargar ICS para calendario nativo
+  if (isSafari) {
+    console.log('🔍 Debug - Descargando ICS para Safari');
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+    toast.success('Archivo descargado. Se abrirá en tu calendario nativo.');
     return;
   }
 
-  // Todos los demás navegadores (Safari, Firefox, Edge): descargar ICS para calendario nativo
-  console.log('🔍 Debug - Descargando ICS para calendario nativo');
-  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = fileName;
-  link.style.display = 'none';
-  document.body.appendChild(link);
-  link.click();
-  setTimeout(() => {
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  }, 100);
+  // Todos los demás navegadores (Chrome, Firefox, Edge): usar Google Calendar
+  const title = encodeURIComponent(activity.actividad);
+  const details = encodeURIComponent(activity.obs || '');
+  const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
+  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
   
-  toast.success('Archivo descargado. Se abrirá en tu calendario nativo.');
+  console.log('🔍 Debug - Usando Google Calendar para:', ua);
+  console.log('🔍 Debug - URL:', googleCalendarUrl);
+  
+  try {
+    const newWindow = window.open(googleCalendarUrl, '_blank');
+    if (newWindow === null || typeof newWindow === 'undefined') {
+      toast.error('Las ventanas emergentes están bloqueadas. Redirigiendo...');
+      window.location.href = googleCalendarUrl;
+    } else {
+      toast.success('Abriendo Google Calendar...');
+    }
+  } catch (error) {
+    console.error('❌ Error:', error);
+    window.location.href = googleCalendarUrl;
+  }
 
 
 };
