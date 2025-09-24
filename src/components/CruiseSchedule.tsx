@@ -150,9 +150,8 @@ const addToCalendar = (activity: ProgramaItem) => {
   
   const fileName = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
   
-  // Detección de plataforma/navegador simplificada
-  const ua = navigator.userAgent;
-  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  // Detección de iOS
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   
   // Para iOS: usar data URL con ICS
   if (isIOS) {
@@ -162,18 +161,20 @@ const addToCalendar = (activity: ProgramaItem) => {
     return;
   }
 
-  // Para todos los demás navegadores (Chrome, Firefox, Safari, Edge): Google Calendar
+  // Para todos los demás navegadores: usar Google Calendar (misma URL que tu código funcional)
   const title = encodeURIComponent(activity.actividad);
   const details = encodeURIComponent(activity.obs || '');
   const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
-  const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
+  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
   
-  console.log('Navegador detectado:', ua);
-  console.log('Abriendo Google Calendar:', gcalUrl);
-  
-  toast.success('Abriendo Google Calendar...');
-  window.open(gcalUrl, '_blank');
-  return;
+  try {
+    // Abrir la URL en una nueva pestaña (igual que tu código)
+    window.open(googleCalendarUrl, '_blank');
+    toast.success('Evento enviado a Google Calendar. Por favor, revisa tus ventanas emergentes.');
+  } catch (error) {
+    toast.error('Error al abrir el calendario. Asegúrate de que las ventanas emergentes estén habilitadas.');
+    console.error('Error al abrir Google Calendar:', error);
+  }
 
 
 };
