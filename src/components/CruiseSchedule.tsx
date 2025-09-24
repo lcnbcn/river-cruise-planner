@@ -161,19 +161,36 @@ const addToCalendar = (activity: ProgramaItem) => {
     return;
   }
 
-  // Para todos los demás navegadores: usar Google Calendar (misma URL que tu código funcional)
+  // Para todos los demás navegadores: usar Google Calendar
   const title = encodeURIComponent(activity.actividad);
   const details = encodeURIComponent(activity.obs || '');
   const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
   const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
   
+  console.log('🔍 Debug - Navegador:', navigator.userAgent);
+  console.log('🔍 Debug - URL generada:', googleCalendarUrl);
+  console.log('🔍 Debug - Intentando abrir en nueva pestaña...');
+  
   try {
-    // Abrir la URL en una nueva pestaña (igual que tu código)
-    window.open(googleCalendarUrl, '_blank');
-    toast.success('Evento enviado a Google Calendar. Por favor, revisa tus ventanas emergentes.');
+    // Intentar abrir la URL en una nueva pestaña
+    const newWindow = window.open(googleCalendarUrl, '_blank');
+    
+    console.log('🔍 Debug - window.open retornó:', newWindow);
+    
+    if (newWindow === null || typeof newWindow === 'undefined') {
+      console.error('❌ Window.open fue bloqueado por el navegador');
+      toast.error('Las ventanas emergentes están bloqueadas. Por favor, permite ventanas emergentes para este sitio.');
+      // Fallback: usar window.location.href
+      window.location.href = googleCalendarUrl;
+    } else {
+      console.log('✅ Ventana abierta exitosamente');
+      toast.success('Evento enviado a Google Calendar. Revisa la nueva pestaña.');
+    }
   } catch (error) {
-    toast.error('Error al abrir el calendario. Asegúrate de que las ventanas emergentes estén habilitadas.');
-    console.error('Error al abrir Google Calendar:', error);
+    console.error('❌ Error al abrir Google Calendar:', error);
+    toast.error('Error al abrir el calendario. Intentando método alternativo...');
+    // Fallback: usar window.location.href
+    window.location.href = googleCalendarUrl;
   }
 
 
