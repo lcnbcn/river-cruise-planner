@@ -150,48 +150,64 @@ const addToCalendar = (activity: ProgramaItem) => {
   
   const fileName = `${activity.actividad.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
   
-  // Detección de iOS
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  // Detección específica de navegador
+  const ua = navigator.userAgent;
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua); // Chrome pero no Edge
   
-  // Para iOS: usar data URL con ICS
+  console.log('🔍 Debug - Navegador:', ua);
+  console.log('🔍 Debug - Es iOS:', isIOS);
+  console.log('🔍 Debug - Es Chrome:', isChrome);
+  
+  // Para iOS: usar data URL con ICS para calendario nativo
   if (isIOS) {
     const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
-    toast.success('Abriendo Calendario...');
+    toast.success('Abriendo Calendario nativo...');
     window.location.href = dataUrl;
     return;
   }
 
-  // Para todos los demás navegadores: usar Google Calendar
-  const title = encodeURIComponent(activity.actividad);
-  const details = encodeURIComponent(activity.obs || '');
-  const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
-  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
-  
-  console.log('🔍 Debug - Navegador:', navigator.userAgent);
-  console.log('🔍 Debug - URL generada:', googleCalendarUrl);
-  console.log('🔍 Debug - Intentando abrir en nueva pestaña...');
-  
-  try {
-    // Intentar abrir la URL en una nueva pestaña
-    const newWindow = window.open(googleCalendarUrl, '_blank');
+  // Solo Chrome: usar Google Calendar
+  if (isChrome) {
+    const title = encodeURIComponent(activity.actividad);
+    const details = encodeURIComponent(activity.obs || '');
+    const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
+    const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=${details}&location=${location}`;
     
-    console.log('🔍 Debug - window.open retornó:', newWindow);
+    console.log('🔍 Debug - Usando Google Calendar para Chrome');
+    console.log('🔍 Debug - URL:', googleCalendarUrl);
     
-    if (newWindow === null || typeof newWindow === 'undefined') {
-      console.error('❌ Window.open fue bloqueado por el navegador');
-      toast.error('Las ventanas emergentes están bloqueadas. Por favor, permite ventanas emergentes para este sitio.');
-      // Fallback: usar window.location.href
+    try {
+      const newWindow = window.open(googleCalendarUrl, '_blank');
+      if (newWindow === null || typeof newWindow === 'undefined') {
+        toast.error('Las ventanas emergentes están bloqueadas. Permitiendo ventanas emergentes...');
+        window.location.href = googleCalendarUrl;
+      } else {
+        toast.success('Abriendo Google Calendar...');
+      }
+    } catch (error) {
+      console.error('❌ Error:', error);
       window.location.href = googleCalendarUrl;
-    } else {
-      console.log('✅ Ventana abierta exitosamente');
-      toast.success('Evento enviado a Google Calendar. Revisa la nueva pestaña.');
     }
-  } catch (error) {
-    console.error('❌ Error al abrir Google Calendar:', error);
-    toast.error('Error al abrir el calendario. Intentando método alternativo...');
-    // Fallback: usar window.location.href
-    window.location.href = googleCalendarUrl;
+    return;
   }
+
+  // Todos los demás navegadores (Safari, Firefox, Edge): descargar ICS para calendario nativo
+  console.log('🔍 Debug - Descargando ICS para calendario nativo');
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = fileName;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(() => {
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }, 100);
+  
+  toast.success('Archivo descargado. Se abrirá en tu calendario nativo.');
 
 
 };
