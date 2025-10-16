@@ -396,29 +396,29 @@ export default function CruiseSchedule() {
   return (
     <div className="min-h-screen bg-gradient-horizon">
       {/* Hero Section */}
-      <div className="relative h-80 overflow-hidden">
+      <div className="relative h-64 sm:h-80 overflow-hidden">
         <img 
           src={cruiseHero} 
           alt="Crucero fluvial de lujo"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-ocean opacity-75"></div>
-        <div className="absolute inset-0 flex items-center justify-center text-center">
-          <div className="text-primary-foreground">
-            <h1 className="text-5xl font-bold mb-2 tracking-wide">
+        <div className="absolute inset-0 flex items-center justify-center text-center px-4">
+          <div className="text-primary-foreground max-w-4xl w-full">
+            <h1 className="text-3xl sm:text-5xl font-bold mb-2 tracking-wide">
               {loadingBarco ? "Cargando..." : barcoInfo?.barco || "MS Charles Dickens"}
             </h1>
-            <div className="flex justify-center gap-4 mb-4">
-              <Anchor className="h-8 w-8" />
-              <Anchor className="h-8 w-8" />
-              <Anchor className="h-8 w-8" />
-              <Anchor className="h-8 w-8" />
+            <div className="flex justify-center gap-2 sm:gap-4 mb-3 sm:mb-4">
+              <Anchor className="h-6 w-6 sm:h-8 sm:w-8" />
+              <Anchor className="h-6 w-6 sm:h-8 sm:w-8" />
+              <Anchor className="h-6 w-6 sm:h-8 sm:w-8" />
+              <Anchor className="h-6 w-6 sm:h-8 sm:w-8" />
             </div>
-            <p className="text-3xl font-bold opacity-90">
+            <p className="text-xl sm:text-3xl font-bold opacity-90">
               Programa diario
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-2 mt-4 text-lg opacity-90">
-              <span>
+            <div className="flex flex-col items-center gap-1 sm:gap-2 mt-3 sm:mt-4 text-sm sm:text-lg opacity-90">
+              <span className="text-center">
                 {loadingBarco ? "Cargando fecha..." : barcoInfo?.dia ? 
                   new Date(barcoInfo.dia).toLocaleDateString('es-ES', { 
                     weekday: 'long', 
@@ -434,73 +434,82 @@ export default function CruiseSchedule() {
                   })
                 }
               </span>
-              <span className="hidden sm:inline">•</span>
-              <span className="flex items-center gap-2 flex-wrap">
+              
+              {/* Weather info - stacked on mobile */}
+              <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flex-wrap justify-center">
                 {loadingBarco ? "Cargando..." : (
                   <>
                     {/* Ciudad 1 */}
-                    {weatherData1?.current ? (
-                      <>
-                        <img 
-                          src={weatherData1.current.condition.icon} 
-                          alt={weatherData1.current.condition.text}
-                          className="h-5 w-5 inline-block"
-                        />
-                        {' '}{Math.round(weatherData1.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
-                        {weatherData1.current.condition.text && ` (${translateWeatherCondition(weatherData1.current.condition.text)})`}
-                      </>
-                    ) : (
-                      <>
-                        🌤️ {barcoInfo?.temperatura1 || 18}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
-                      </>
-                    )}
+                    <span className="flex items-center gap-1 sm:gap-2">
+                      {weatherData1?.current ? (
+                        <>
+                          <img 
+                            src={weatherData1.current.condition.icon} 
+                            alt={weatherData1.current.condition.text}
+                            className="h-4 w-4 sm:h-5 sm:w-5 inline-block"
+                          />
+                          {Math.round(weatherData1.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
+                          <span className="hidden sm:inline">
+                            {weatherData1.current.condition.text && ` (${translateWeatherCondition(weatherData1.current.condition.text)})`}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          🌤️ {barcoInfo?.temperatura1 || 18}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
+                        </>
+                      )}
+                    </span>
                     
                     {/* Ciudad 2 */}
                     {barcoInfo?.temperatura2 && barcoInfo?.ciudad2 && (
                       <>
-                        <span className="hidden sm:inline"> / </span>
-                        {weatherData2?.current ? (
-                          <>
-                            <img 
-                              src={weatherData2.current.condition.icon} 
-                              alt={weatherData2.current.condition.text}
-                              className="h-5 w-5 inline-block"
-                            />
-                            {' '}{Math.round(weatherData2.current.temp_c)}°C - {barcoInfo.ciudad2}
-                            {weatherData2.current.condition.text && ` (${translateWeatherCondition(weatherData2.current.condition.text)})`}
-                          </>
-                        ) : (
-                          <>
-                            🌤️ {barcoInfo.temperatura2}°C - {barcoInfo.ciudad2}
-                          </>
-                        )}
+                        <span className="hidden sm:inline opacity-50">•</span>
+                        <span className="flex items-center gap-1 sm:gap-2">
+                          {weatherData2?.current ? (
+                            <>
+                              <img 
+                                src={weatherData2.current.condition.icon} 
+                                alt={weatherData2.current.condition.text}
+                                className="h-4 w-4 sm:h-5 sm:w-5 inline-block"
+                              />
+                              {Math.round(weatherData2.current.temp_c)}°C - {barcoInfo.ciudad2}
+                              <span className="hidden sm:inline">
+                                {weatherData2.current.condition.text && ` (${translateWeatherCondition(weatherData2.current.condition.text)})`}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              🌤️ {barcoInfo.temperatura2}°C - {barcoInfo.ciudad2}
+                            </>
+                          )}
+                        </span>
                       </>
                     )}
                   </>
                 )}
-              </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Información de embarque */}
-      <div className="container mx-auto px-6 -mt-6 relative z-10">
-        <div className="bg-card rounded-lg border shadow-lg p-6 max-w-2xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 -mt-6 relative z-10">
+        <div className="bg-card rounded-lg border shadow-lg p-4 sm:p-6 max-w-2xl mx-auto">
           <div className="flex items-center gap-3 mb-3">
             <div className="bg-primary text-primary-foreground rounded-full p-2">
               <Anchor className="h-5 w-5" />
             </div>
-            <h3 className="text-lg font-semibold">Información de embarque</h3>
+            <h3 className="text-base sm:text-lg font-semibold">Información de embarque</h3>
           </div>
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <MapPin className="h-4 w-4" />
-              <span>{loadingBarco ? "Cargando ubicación..." : googleToAppleQuery(barcoInfo?.atraque || "", "Konrad‑Adenauer‑Ufer 3, 50668 Köln")}</span>
+          <div className="space-y-2 text-xs sm:text-sm">
+            <div className="flex items-start gap-2 text-muted-foreground">
+              <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <span className="break-words">{loadingBarco ? "Cargando ubicación..." : googleToAppleQuery(barcoInfo?.atraque || "", "Konrad‑Adenauer‑Ufer 3, 50668 Köln")}</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="h-4 w-4" />
-              <span>Todos a bordo: <span className="font-bold text-foreground">{loadingBarco ? "..." : barcoInfo?.todos_abordos || "20:15"}</span> | Salida: <span className="font-bold text-foreground">{loadingBarco ? "..." : barcoInfo?.salida || "20:30"}</span></span>
+            <div className="flex items-start gap-2 text-muted-foreground">
+              <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <span className="break-words">Todos a bordo: <span className="font-bold text-foreground">{loadingBarco ? "..." : barcoInfo?.todos_abordos || "20:15"}</span> | Salida: <span className="font-bold text-foreground">{loadingBarco ? "..." : barcoInfo?.salida || "20:30"}</span></span>
             </div>
           </div>
           <div className="mt-4">
@@ -550,10 +559,10 @@ export default function CruiseSchedule() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-12">
+      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="max-w-4xl mx-auto">
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-foreground mb-6">
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-6">
                 Actividades y Excursiones
               </h2>
               
@@ -561,27 +570,27 @@ export default function CruiseSchedule() {
                 <div className="text-center py-8">Cargando programa...</div>
               ) : schedule.map((item, index) => (
                 <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
-                  <CardContent className="p-4 sm:p-6">
-                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-                        <div className="flex items-center gap-3 flex-1">
-                          <div className="bg-primary text-primary-foreground rounded-lg p-2 text-lg font-mono font-bold min-w-[60px] text-center">
+                  <CardContent className="p-3 sm:p-6">
+                     <div className="flex flex-col gap-3 sm:gap-4 mb-3 sm:mb-4">
+                        <div className="flex items-start sm:items-center gap-3 flex-1">
+                          <div className="bg-primary text-primary-foreground rounded-lg p-2 text-base sm:text-lg font-mono font-bold min-w-[55px] sm:min-w-[60px] text-center flex-shrink-0">
                             {item.hora}
                           </div>
-                          <div className="flex-1">
-                            <h3 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-base sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors break-words">
                               {item.actividad}
                             </h3>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 justify-center p-3 bg-muted/30 rounded-lg">
-                          <Badge {...getActivityBadge(item.tipo_actividad)} className="flex-shrink-0">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 sm:justify-center sm:p-3 sm:bg-muted/30 sm:rounded-lg">
+                          <Badge {...getActivityBadge(item.tipo_actividad)} className="flex-shrink-0 w-fit">
                             {getActivityBadge(item.tipo_actividad).label}
                           </Badge>
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => addToCalendar(item)}
-                            className="gap-2 whitespace-nowrap text-xs"
+                            className="gap-2 whitespace-nowrap text-xs w-full sm:w-auto"
                           >
                             <Calendar className="h-4 w-4" />
                             Añadir al calendario
@@ -589,9 +598,11 @@ export default function CruiseSchedule() {
                         </div>
                       </div>
                      
-                     <div className="text-muted-foreground text-sm sm:text-base">
-                       {item.obs}
-                     </div>
+                     {item.obs && (
+                       <div className="text-muted-foreground text-xs sm:text-base break-words">
+                         {item.obs}
+                       </div>
+                     )}
                    </CardContent>
                 </Card>
               ))}
@@ -703,8 +714,8 @@ export default function CruiseSchedule() {
       </div>
 
       {/* Sección Contactos - Fuera del container */}
-      <div className="bg-card rounded-lg p-6 shadow-sm border mx-6 mb-6">
-        <h2 className="text-xl font-bold text-foreground mb-4">Contactos</h2>
+      <div className="bg-card rounded-lg p-4 sm:p-6 shadow-sm border mx-4 sm:mx-6 mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4">Contactos</h2>
         
         {/* Contacto del Barco */}
         <div className="mb-6">
