@@ -78,6 +78,7 @@ const translateWeatherCondition = (condition: string): string => {
     'overcast': 'Cubierto',
     'mist': 'Niebla',
     'patchy rain possible': 'Posible lluvia dispersa',
+    'patchy rain nearby': 'Lluvia dispersa cercana',
     'patchy snow possible': 'Posible nieve dispersa',
     'patchy sleet possible': 'Posible aguanieve dispersa',
     'patchy freezing drizzle possible': 'Posible llovizna helada',
@@ -124,7 +125,6 @@ const translateWeatherCondition = (condition: string): string => {
   
   // Convertir a minúsculas para hacer la búsqueda case-insensitive
   const conditionLower = condition.toLowerCase();
-  console.log('Weather condition:', condition, '-> Translation:', translations[conditionLower] || condition);
   return translations[conditionLower] || condition;
 };
 
