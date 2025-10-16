@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
-import { Clock, MapPin, Anchor, ExternalLink, Calendar, Phone, MessageCircle } from "lucide-react";
+import { Clock, MapPin, Anchor, ExternalLink, Calendar, Phone, MessageCircle, Cloud } from "lucide-react";
 import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -218,6 +218,7 @@ export default function CruiseSchedule() {
   const [loading, setLoading] = useState(true);
   const [loadingDestacados, setLoadingDestacados] = useState(true);
   const [loadingBarco, setLoadingBarco] = useState(true);
+  const [weatherData, setWeatherData] = useState<any>(null);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -270,6 +271,29 @@ export default function CruiseSchedule() {
           console.error('Error fetching barco info:', error);
         } else {
           setBarcoInfo(data);
+          
+          // Fetch weather data with random delay (0-5s) for load distribution
+          const delay = Math.random() * 5000;
+          setTimeout(async () => {
+            try {
+              const location = data.ciudad1;
+              const date = data.dia;
+              
+              if (location && date) {
+                const { data: weatherResult, error: weatherError } = await supabase.functions.invoke('weather-data', {
+                  body: { location, date }
+                });
+
+                if (weatherError) {
+                  console.warn('Weather data fetch failed (silent):', weatherError);
+                } else if (weatherResult) {
+                  setWeatherData(weatherResult);
+                }
+              }
+            } catch (error) {
+              console.warn('Weather data fetch failed (silent):', error);
+            }
+          }, delay);
         }
       } catch (error) {
         console.error('Error:', error);
@@ -328,8 +352,22 @@ export default function CruiseSchedule() {
               <span className="flex items-center gap-2">
                 {loadingBarco ? "Cargando..." : (
                   <>
-                    🌤️ {barcoInfo?.temperatura1 || 18}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
-                    {barcoInfo?.temperatura2 && barcoInfo?.ciudad2 && (
+                    {weatherData?.current ? (
+                      <>
+                        <img 
+                          src={weatherData.current.condition.icon} 
+                          alt={weatherData.current.condition.text}
+                          className="h-5 w-5 inline-block"
+                        />
+                        {' '}{Math.round(weatherData.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
+                        {weatherData.current.condition.text && ` (${weatherData.current.condition.text})`}
+                      </>
+                    ) : (
+                      <>
+                        🌤️ {barcoInfo?.temperatura1 || 18}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
+                      </>
+                    )}
+                    {barcoInfo?.temperatura2 && barcoInfo?.ciudad2 && !weatherData?.current && (
                       <span> / {barcoInfo.temperatura2}°C - {barcoInfo.ciudad2}</span>
                     )}
                   </>
