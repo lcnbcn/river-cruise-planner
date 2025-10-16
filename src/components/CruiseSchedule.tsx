@@ -128,6 +128,27 @@ const translateWeatherCondition = (condition: string): string => {
   return translations[conditionLower] || condition;
 };
 
+// Normaliza nombres de ciudades al formato esperado por WeatherAPI
+const normalizeLocation = (input?: string | null): string => {
+  const raw = (input ?? '').trim();
+  if (!raw) return '';
+  const noAccents = raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const key = noAccents.toLowerCase();
+  const map: Record<string, string> = {
+    'colonia': 'Cologne, Germany',
+    'köln': 'Cologne, Germany',
+    'koln': 'Cologne, Germany',
+    'koln, alemania': 'Cologne, Germany',
+    'maguncia': 'Mainz, Germany',
+    'mainz': 'Mainz, Germany',
+    'bonn': 'Bonn, Germany',
+    'barcelona': 'Barcelona, Spain',
+    'madrid': 'Madrid, Spain',
+    'passau': 'Passau, Germany',
+  };
+  return map[key] || raw;
+};
+
 const getActivityIcon = (type: string) => {
   switch (type) {
     case "excursion":
@@ -338,7 +359,7 @@ export default function CruiseSchedule() {
           const delay1 = isMobile ? 0 : Math.random() * 5000;
           setTimeout(async () => {
             try {
-              const location = data.ciudad1;
+              const location = normalizeLocation(data.ciudad1);
               const date = data.dia;
               
               if (location && date) {
@@ -362,7 +383,7 @@ export default function CruiseSchedule() {
             const delay2 = isMobile ? 0 : Math.random() * 5000;
             setTimeout(async () => {
               try {
-                const location = data.ciudad2;
+                const location = normalizeLocation(data.ciudad2);
                 const date = data.dia;
                 
                 if (location && date) {
