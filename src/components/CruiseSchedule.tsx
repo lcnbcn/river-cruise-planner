@@ -333,8 +333,9 @@ export default function CruiseSchedule() {
         } else {
           setBarcoInfo(data);
           
-          // Fetch weather data for ciudad1 with random delay (0-5s) for load distribution
-          const delay1 = Math.random() * 5000;
+          // Fetch weather data for ciudad1 con retardo aleatorio (0-5s) para distribuir carga; en móvil = 0ms
+          const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent);
+          const delay1 = isMobile ? 0 : Math.random() * 5000;
           setTimeout(async () => {
             try {
               const location = data.ciudad1;
@@ -358,7 +359,7 @@ export default function CruiseSchedule() {
 
           // Fetch weather data for ciudad2 if it exists
           if (data.ciudad2) {
-            const delay2 = Math.random() * 5000;
+            const delay2 = isMobile ? 0 : Math.random() * 5000;
             setTimeout(async () => {
               try {
                 const location = data.ciudad2;
