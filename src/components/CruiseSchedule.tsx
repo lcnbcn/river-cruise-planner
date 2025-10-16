@@ -593,7 +593,7 @@ export default function CruiseSchedule() {
               ) : schedule.map((item, index) => (
                 <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-accent">
                   <CardContent className="p-3 sm:p-6">
-                     <div className="flex flex-col gap-3 sm:gap-4 mb-3 sm:mb-4">
+                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
                         <div className="flex items-start sm:items-center gap-3 flex-1">
                           <div className="bg-primary text-primary-foreground rounded-lg p-2 text-base sm:text-lg font-mono font-bold min-w-[55px] sm:min-w-[60px] text-center flex-shrink-0">
                             {item.hora}
@@ -603,8 +603,6 @@ export default function CruiseSchedule() {
                               {item.actividad}
                             </h3>
                           </div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 sm:justify-center sm:p-3 sm:bg-muted/30 sm:rounded-lg">
                           <Badge {...getActivityBadge(item.tipo_actividad)} className="flex-shrink-0 w-fit">
                             {getActivityBadge(item.tipo_actividad).label}
                           </Badge>
@@ -612,10 +610,11 @@ export default function CruiseSchedule() {
                             variant="outline"
                             size="sm"
                             onClick={() => addToCalendar(item)}
-                            className="gap-2 whitespace-nowrap text-xs w-full sm:w-auto"
+                            className="gap-2 whitespace-nowrap text-xs flex-shrink-0"
                           >
                             <Calendar className="h-4 w-4" />
-                            Añadir al calendario
+                            <span className="hidden sm:inline">Añadir al calendario</span>
+                            <span className="sm:hidden">Calendario</span>
                           </Button>
                         </div>
                       </div>
