@@ -68,6 +68,63 @@ const googleToAppleQuery = (input: string, fallback: string) => {
   }
 };
 
+// Traducir condiciones del clima al español
+const translateWeatherCondition = (condition: string): string => {
+  const translations: { [key: string]: string } = {
+    'Sunny': 'Soleado',
+    'Clear': 'Despejado',
+    'Partly cloudy': 'Parcialmente nublado',
+    'Cloudy': 'Nublado',
+    'Overcast': 'Cubierto',
+    'Mist': 'Niebla',
+    'Patchy rain possible': 'Posible lluvia dispersa',
+    'Patchy snow possible': 'Posible nieve dispersa',
+    'Patchy sleet possible': 'Posible aguanieve dispersa',
+    'Patchy freezing drizzle possible': 'Posible llovizna helada',
+    'Thundery outbreaks possible': 'Posibles tormentas',
+    'Blowing snow': 'Nieve con viento',
+    'Blizzard': 'Ventisca',
+    'Fog': 'Niebla',
+    'Freezing fog': 'Niebla helada',
+    'Patchy light drizzle': 'Llovizna ligera dispersa',
+    'Light drizzle': 'Llovizna ligera',
+    'Freezing drizzle': 'Llovizna helada',
+    'Heavy freezing drizzle': 'Llovizna helada intensa',
+    'Patchy light rain': 'Lluvia ligera dispersa',
+    'Light rain': 'Lluvia ligera',
+    'Moderate rain at times': 'Lluvia moderada a intervalos',
+    'Moderate rain': 'Lluvia moderada',
+    'Heavy rain at times': 'Lluvia intensa a intervalos',
+    'Heavy rain': 'Lluvia intensa',
+    'Light freezing rain': 'Lluvia helada ligera',
+    'Moderate or heavy freezing rain': 'Lluvia helada moderada o intensa',
+    'Light sleet': 'Aguanieve ligera',
+    'Moderate or heavy sleet': 'Aguanieve moderada o intensa',
+    'Patchy light snow': 'Nieve ligera dispersa',
+    'Light snow': 'Nieve ligera',
+    'Patchy moderate snow': 'Nieve moderada dispersa',
+    'Moderate snow': 'Nieve moderada',
+    'Patchy heavy snow': 'Nieve intensa dispersa',
+    'Heavy snow': 'Nieve intensa',
+    'Ice pellets': 'Granizo',
+    'Light rain shower': 'Chubascos ligeros',
+    'Moderate or heavy rain shower': 'Chubascos moderados o intensos',
+    'Torrential rain shower': 'Chubascos torrenciales',
+    'Light sleet showers': 'Chubascos ligeros de aguanieve',
+    'Moderate or heavy sleet showers': 'Chubascos de aguanieve moderados o intensos',
+    'Light snow showers': 'Chubascos ligeros de nieve',
+    'Moderate or heavy snow showers': 'Chubascos de nieve moderados o intensos',
+    'Light showers of ice pellets': 'Chubascos ligeros de granizo',
+    'Moderate or heavy showers of ice pellets': 'Chubascos de granizo moderados o intensos',
+    'Patchy light rain with thunder': 'Lluvia ligera dispersa con truenos',
+    'Moderate or heavy rain with thunder': 'Lluvia moderada o intensa con truenos',
+    'Patchy light snow with thunder': 'Nieve ligera dispersa con truenos',
+    'Moderate or heavy snow with thunder': 'Nieve moderada o intensa con truenos'
+  };
+  
+  return translations[condition] || condition;
+};
+
 const getActivityIcon = (type: string) => {
   switch (type) {
     case "excursion":
@@ -360,7 +417,7 @@ export default function CruiseSchedule() {
                           className="h-5 w-5 inline-block"
                         />
                         {' '}{Math.round(weatherData.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
-                        {weatherData.current.condition.text && ` (${weatherData.current.condition.text})`}
+                        {weatherData.current.condition.text && ` (${translateWeatherCondition(weatherData.current.condition.text)})`}
                       </>
                     ) : (
                       <>
