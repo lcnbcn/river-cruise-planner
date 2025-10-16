@@ -449,9 +449,9 @@ export default function CruiseSchedule() {
                             alt={weatherData1.current.condition.text}
                             className="h-4 w-4 sm:h-5 sm:w-5 inline-block"
                           />
-                          {Math.round(weatherData1.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
-                          <span className="hidden sm:inline">
-                            {weatherData1.current.condition.text && ` (${translateWeatherCondition(weatherData1.current.condition.text)})`}
+                          <span className="text-xs sm:text-sm">
+                            {Math.round(weatherData1.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
+                            {weatherData1.current.condition.text && ` (${translateWeatherCondition(weatherData1.current.condition.text.toLowerCase())})`}
                           </span>
                         </>
                       ) : (
@@ -473,9 +473,9 @@ export default function CruiseSchedule() {
                                 alt={weatherData2.current.condition.text}
                                 className="h-4 w-4 sm:h-5 sm:w-5 inline-block"
                               />
-                              {Math.round(weatherData2.current.temp_c)}°C - {barcoInfo.ciudad2}
-                              <span className="hidden sm:inline">
-                                {weatherData2.current.condition.text && ` (${translateWeatherCondition(weatherData2.current.condition.text)})`}
+                              <span className="text-xs sm:text-sm">
+                                {Math.round(weatherData2.current.temp_c)}°C - {barcoInfo.ciudad2}
+                                {weatherData2.current.condition.text && ` (${translateWeatherCondition(weatherData2.current.condition.text.toLowerCase())})`}
                               </span>
                             </>
                           ) : (
