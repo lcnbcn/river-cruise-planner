@@ -278,7 +278,8 @@ export default function CruiseSchedule() {
   const [loading, setLoading] = useState(true);
   const [loadingDestacados, setLoadingDestacados] = useState(true);
   const [loadingBarco, setLoadingBarco] = useState(true);
-  const [weatherData, setWeatherData] = useState<any>(null);
+  const [weatherData1, setWeatherData1] = useState<any>(null);
+  const [weatherData2, setWeatherData2] = useState<any>(null);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -332,8 +333,8 @@ export default function CruiseSchedule() {
         } else {
           setBarcoInfo(data);
           
-          // Fetch weather data with random delay (0-5s) for load distribution
-          const delay = Math.random() * 5000;
+          // Fetch weather data for ciudad1 with random delay (0-5s) for load distribution
+          const delay1 = Math.random() * 5000;
           setTimeout(async () => {
             try {
               const location = data.ciudad1;
@@ -345,15 +346,40 @@ export default function CruiseSchedule() {
                 });
 
                 if (weatherError) {
-                  console.warn('Weather data fetch failed (silent):', weatherError);
+                  console.warn('Weather data fetch failed for ciudad1 (silent):', weatherError);
                 } else if (weatherResult) {
-                  setWeatherData(weatherResult);
+                  setWeatherData1(weatherResult);
                 }
               }
-            } catch (error) {
-              console.warn('Weather data fetch failed (silent):', error);
+            } catch (err) {
+              console.warn('Weather request error for ciudad1 (silent):', err);
             }
-          }, delay);
+          }, delay1);
+
+          // Fetch weather data for ciudad2 if it exists
+          if (data.ciudad2) {
+            const delay2 = Math.random() * 5000;
+            setTimeout(async () => {
+              try {
+                const location = data.ciudad2;
+                const date = data.dia;
+                
+                if (location && date) {
+                  const { data: weatherResult, error: weatherError } = await supabase.functions.invoke('weather-data', {
+                    body: { location, date }
+                  });
+
+                  if (weatherError) {
+                    console.warn('Weather data fetch failed for ciudad2 (silent):', weatherError);
+                  } else if (weatherResult) {
+                    setWeatherData2(weatherResult);
+                  }
+                }
+              } catch (err) {
+                console.warn('Weather request error for ciudad2 (silent):', err);
+              }
+            }, delay2);
+          }
         }
       } catch (error) {
         console.error('Error:', error);
@@ -409,26 +435,46 @@ export default function CruiseSchedule() {
                 }
               </span>
               <span className="hidden sm:inline">•</span>
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2 flex-wrap">
                 {loadingBarco ? "Cargando..." : (
                   <>
-                    {weatherData?.current ? (
+                    {/* Ciudad 1 */}
+                    {weatherData1?.current ? (
                       <>
                         <img 
-                          src={weatherData.current.condition.icon} 
-                          alt={weatherData.current.condition.text}
+                          src={weatherData1.current.condition.icon} 
+                          alt={weatherData1.current.condition.text}
                           className="h-5 w-5 inline-block"
                         />
-                        {' '}{Math.round(weatherData.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
-                        {weatherData.current.condition.text && ` (${translateWeatherCondition(weatherData.current.condition.text)})`}
+                        {' '}{Math.round(weatherData1.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
+                        {weatherData1.current.condition.text && ` (${translateWeatherCondition(weatherData1.current.condition.text)})`}
                       </>
                     ) : (
                       <>
                         🌤️ {barcoInfo?.temperatura1 || 18}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
                       </>
                     )}
-                    {barcoInfo?.temperatura2 && barcoInfo?.ciudad2 && !weatherData?.current && (
-                      <span> / {barcoInfo.temperatura2}°C - {barcoInfo.ciudad2}</span>
+                    
+                    {/* Ciudad 2 */}
+                    {barcoInfo?.temperatura2 && barcoInfo?.ciudad2 && (
+                      <>
+                        <span className="hidden sm:inline"> / </span>
+                        {weatherData2?.current ? (
+                          <>
+                            <img 
+                              src={weatherData2.current.condition.icon} 
+                              alt={weatherData2.current.condition.text}
+                              className="h-5 w-5 inline-block"
+                            />
+                            {' '}{Math.round(weatherData2.current.temp_c)}°C - {barcoInfo.ciudad2}
+                            {weatherData2.current.condition.text && ` (${translateWeatherCondition(weatherData2.current.condition.text)})`}
+                          </>
+                        ) : (
+                          <>
+                            🌤️ {barcoInfo.temperatura2}°C - {barcoInfo.ciudad2}
+                          </>
+                        )}
+                      </>
                     )}
                   </>
                 )}
