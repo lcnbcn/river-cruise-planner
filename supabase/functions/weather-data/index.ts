@@ -119,9 +119,10 @@ Deno.serve(async (req) => {
       throw new Error('WEATHER_API_KEY not configured');
     }
 
-    const url = new URL(req.url);
-    const location = url.searchParams.get('location');
-    const date = url.searchParams.get('date');
+    // Read parameters from request body
+    const requestBody = await req.json();
+    const location = requestBody.location;
+    const date = requestBody.date;
     const clientId = req.headers.get('x-client-info') || 'default';
 
     if (!location) {
