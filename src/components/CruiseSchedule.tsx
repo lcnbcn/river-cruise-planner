@@ -677,7 +677,7 @@ export default function CruiseSchedule() {
                       {horarioRestaurante.map((horario) => (
                         <div key={horario.id}>
                           <h3 className="font-semibold text-foreground mb-2">{horario.horario}</h3>
-                          <p className="text-xl font-bold text-primary">{horario.franja_horaria}</p>
+                          <p className="text-xl font-bold text-accent">{horario.franja_horaria}</p>
                         </div>
                       ))}
                     </div>
