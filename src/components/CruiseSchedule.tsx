@@ -453,7 +453,7 @@ export default function CruiseSchedule() {
           alt="Crucero fluvial de lujo"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-ocean opacity-75"></div>
+        <div className="absolute inset-0 bg-black/40"></div>
         <div className="absolute inset-0 flex items-center justify-center text-center px-4">
           <div className="text-primary-foreground max-w-4xl w-full">
             <h1 className="text-3xl sm:text-5xl font-bold mb-2 tracking-wide">
