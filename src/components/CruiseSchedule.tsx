@@ -698,7 +698,7 @@ export default function CruiseSchedule() {
                 {loadingDestacados ? (
                   <div className="text-center py-8 col-span-2">Cargando destacados...</div>
                 ) : destacados.map((destacado, index) => (
-                   <Card key={index} className="border-l-4 border-l-accent">
+                   <Card key={index} className="border-l-4 border-l-primary">
                      <CardContent className="p-4">
                        {destacado.img && (
                          <div className="w-full mb-3">
