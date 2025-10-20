@@ -619,11 +619,11 @@ export default function CruiseSchedule() {
               {loading ? (
                 <div className="text-center py-8">Cargando programa...</div>
               ) : schedule.map((item, index) => (
-                <Card key={index} className="group hover:shadow-lg transition-all duration-300">
+                <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
                   <CardContent className="p-3 sm:p-6">
                      <div className="flex flex-col gap-3 sm:gap-4 mb-3 sm:mb-4">
                         <div className="flex items-start sm:items-center gap-3 flex-1">
-                          <div className="bg-primary text-primary-foreground rounded-lg p-2 text-base sm:text-lg font-mono font-bold min-w-[55px] sm:min-w-[60px] text-center flex-shrink-0">
+                          <div className="bg-muted text-muted-foreground rounded-lg p-2 text-base sm:text-lg font-mono font-bold min-w-[55px] sm:min-w-[60px] text-center flex-shrink-0">
                             {item.hora}
                           </div>
                           <div className="flex-1 min-w-0">
