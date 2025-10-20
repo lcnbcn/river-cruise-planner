@@ -178,18 +178,19 @@ const getActivityBadge = (type: string) => {
   
   // Mapeo dinámico basado en los tipos reales de la base de datos
   const badges = {
-    'excursión': { variant: "default" as const, label: "Excursión" },
-    'entretenimiento': { variant: "outline" as const, label: "Entretenimiento" },
-    'llegada': { variant: "default" as const, label: "Llegada" },
-    'salida': { variant: "destructive" as const, label: "Salida" },
-    'charla': { variant: "secondary" as const, label: "Charla" },
-    'importante': { variant: "destructive" as const, label: "Importante" }
+    'excursión': { variant: "default" as const, label: "Excursión", className: "bg-accent text-accent-foreground" },
+    'entretenimiento': { variant: "outline" as const, label: "Entretenimiento", className: "border-accent text-accent" },
+    'llegada': { variant: "default" as const, label: "Llegada", className: "bg-accent text-accent-foreground" },
+    'salida': { variant: "destructive" as const, label: "Salida", className: "" },
+    'charla': { variant: "secondary" as const, label: "Charla", className: "bg-accent/10 text-accent" },
+    'importante': { variant: "destructive" as const, label: "Importante", className: "" }
   };
   
   // Si no encuentra el tipo exacto, usar el tipo original como label
   return badges[normalizedType as keyof typeof badges] || { 
     variant: "outline" as const, 
-    label: type || "A bordo" 
+    label: type || "A bordo",
+    className: "border-accent text-accent"
   };
 };
 
@@ -633,7 +634,10 @@ export default function CruiseSchedule() {
                           </div>
                         </div>
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 sm:justify-center sm:p-3 sm:bg-muted/30 sm:rounded-lg">
-                          <Badge {...getActivityBadge(item.tipo_actividad)} className="flex-shrink-0 w-fit">
+                          <Badge 
+                            variant={getActivityBadge(item.tipo_actividad).variant}
+                            className={`flex-shrink-0 w-fit ${getActivityBadge(item.tipo_actividad).className || ''}`}
+                          >
                             {getActivityBadge(item.tipo_actividad).label}
                           </Badge>
                           <Button

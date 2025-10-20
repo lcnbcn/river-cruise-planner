@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 0 64% 65%;
+    --accent: 203 65% 58%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -43,9 +43,15 @@ All colors MUST be HSL.
     --catai-gray: 0 0% 96%;
     --catai-text: 0 0% 20%;
     
+    /* Activity color - #4EA3D9 */
+    --activity-blue: 203 65% 58%;
+    --activity-blue-light: 203 65% 68%;
+    --activity-blue-dark: 203 65% 48%;
+    
     /* Gradients */
     --gradient-catai: linear-gradient(135deg, hsl(0 64% 58%), hsl(0 64% 68%));
     --gradient-red: linear-gradient(180deg, hsl(0 64% 58%), hsl(0 64% 48%));
+    --gradient-activity: linear-gradient(135deg, hsl(203 65% 58%), hsl(203 65% 68%));
     --gradient-subtle: linear-gradient(90deg, hsl(0 0% 100%), hsl(0 0% 98%));
 
     --radius: 0.5rem;
@@ -86,7 +92,7 @@ All colors MUST be HSL.
     --muted: 0 0% 18%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 0 64% 65%;
+    --accent: 203 65% 58%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
@@ -103,8 +109,14 @@ All colors MUST be HSL.
     --catai-gray: 0 0% 18%;
     --catai-text: 0 0% 95%;
     
+    /* Activity color - #4EA3D9 */
+    --activity-blue: 203 65% 58%;
+    --activity-blue-light: 203 65% 68%;
+    --activity-blue-dark: 203 65% 48%;
+    
     --gradient-catai: linear-gradient(135deg, hsl(0 64% 58%), hsl(0 64% 68%));
     --gradient-red: linear-gradient(180deg, hsl(0 64% 58%), hsl(0 64% 48%));
+    --gradient-activity: linear-gradient(135deg, hsl(203 65% 58%), hsl(203 65% 68%));
     --gradient-subtle: linear-gradient(90deg, hsl(0 0% 12%), hsl(0 0% 15%));
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
