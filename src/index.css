@@ -17,7 +17,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 20%;
 
-    --primary: 0 85% 45%;
+    --primary: 0 64% 58%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 96%;
@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 0 85% 55%;
+    --accent: 0 64% 65%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -34,18 +34,18 @@ All colors MUST be HSL.
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 0 85% 45%;
+    --ring: 0 64% 58%;
 
-    /* Catai brand colors */
-    --catai-red: 0 85% 45%;
-    --catai-red-light: 0 85% 55%;
-    --catai-red-dark: 0 85% 35%;
+    /* Catai brand colors - #d94f4f */
+    --catai-red: 0 64% 58%;
+    --catai-red-light: 0 64% 68%;
+    --catai-red-dark: 0 64% 48%;
     --catai-gray: 0 0% 96%;
     --catai-text: 0 0% 20%;
     
     /* Gradients */
-    --gradient-catai: linear-gradient(135deg, hsl(0 85% 45%), hsl(0 85% 55%));
-    --gradient-red: linear-gradient(180deg, hsl(0 85% 50%), hsl(0 85% 40%));
+    --gradient-catai: linear-gradient(135deg, hsl(0 64% 58%), hsl(0 64% 68%));
+    --gradient-red: linear-gradient(180deg, hsl(0 64% 58%), hsl(0 64% 48%));
     --gradient-subtle: linear-gradient(90deg, hsl(0 0% 100%), hsl(0 0% 98%));
 
     --radius: 0.5rem;
@@ -77,7 +77,7 @@ All colors MUST be HSL.
     --popover: 0 0% 12%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 0 85% 55%;
+    --primary: 0 64% 58%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 18%;
@@ -86,7 +86,7 @@ All colors MUST be HSL.
     --muted: 0 0% 18%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 0 85% 60%;
+    --accent: 0 64% 65%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
@@ -94,17 +94,17 @@ All colors MUST be HSL.
 
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 0 85% 55%;
+    --ring: 0 64% 58%;
 
-    /* Dark Catai theme */
-    --catai-red: 0 85% 55%;
-    --catai-red-light: 0 85% 65%;
-    --catai-red-dark: 0 85% 45%;
+    /* Dark Catai theme - #d94f4f */
+    --catai-red: 0 64% 58%;
+    --catai-red-light: 0 64% 68%;
+    --catai-red-dark: 0 64% 48%;
     --catai-gray: 0 0% 18%;
     --catai-text: 0 0% 95%;
     
-    --gradient-catai: linear-gradient(135deg, hsl(0 85% 45%), hsl(0 85% 60%));
-    --gradient-red: linear-gradient(180deg, hsl(0 85% 50%), hsl(0 85% 35%));
+    --gradient-catai: linear-gradient(135deg, hsl(0 64% 58%), hsl(0 64% 68%));
+    --gradient-red: linear-gradient(180deg, hsl(0 64% 58%), hsl(0 64% 48%));
     --gradient-subtle: linear-gradient(90deg, hsl(0 0% 12%), hsl(0 0% 15%));
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
