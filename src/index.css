@@ -8,45 +8,45 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 240 10% 98%;
-    --foreground: 220 30% 15%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 30% 15%;
+    --card-foreground: 0 0% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 15%;
+    --popover-foreground: 0 0% 20%;
 
-    --primary: 210 100% 40%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 0 85% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 30% 92%;
-    --secondary-foreground: 220 30% 15%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 210 30% 95%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 200 80% 50%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 0 85% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214 31% 91%;
-    --input: 214 31% 91%;
-    --ring: 210 100% 40%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 85% 45%;
 
-    /* Nautical theme colors */
-    --nautical-blue: 210 100% 25%;
-    --ocean-blue: 200 80% 50%;
-    --deep-sea: 220 60% 20%;
-    --wave-blue: 210 70% 60%;
-    --sea-foam: 180 40% 85%;
+    /* Catai brand colors */
+    --catai-red: 0 85% 45%;
+    --catai-red-light: 0 85% 55%;
+    --catai-red-dark: 0 85% 35%;
+    --catai-gray: 0 0% 96%;
+    --catai-text: 0 0% 20%;
     
     /* Gradients */
-    --gradient-ocean: linear-gradient(135deg, hsl(210 100% 40%), hsl(200 80% 50%));
-    --gradient-wave: linear-gradient(180deg, hsl(210 70% 60%), hsl(200 80% 50%));
-    --gradient-horizon: linear-gradient(90deg, hsl(240 10% 98%), hsl(210 30% 92%));
+    --gradient-catai: linear-gradient(135deg, hsl(0 85% 45%), hsl(0 85% 55%));
+    --gradient-red: linear-gradient(180deg, hsl(0 85% 50%), hsl(0 85% 40%));
+    --gradient-subtle: linear-gradient(90deg, hsl(0 0% 100%), hsl(0 0% 98%));
 
     --radius: 0.5rem;
 
@@ -68,44 +68,44 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 220 30% 8%;
-    --foreground: 210 40% 95%;
+    --background: 0 0% 10%;
+    --foreground: 0 0% 95%;
 
-    --card: 220 30% 10%;
-    --card-foreground: 210 40% 95%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 220 30% 10%;
-    --popover-foreground: 210 40% 95%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 200 80% 50%;
-    --primary-foreground: 220 30% 8%;
+    --primary: 0 85% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 30% 15%;
-    --secondary-foreground: 210 40% 95%;
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 220 30% 15%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 210 70% 60%;
-    --accent-foreground: 220 30% 8%;
+    --accent: 0 85% 60%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 95%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 220 30% 18%;
-    --input: 220 30% 18%;
-    --ring: 200 80% 50%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 85% 55%;
 
-    /* Dark nautical theme */
-    --nautical-blue: 210 80% 40%;
-    --ocean-blue: 200 70% 45%;
-    --deep-sea: 220 40% 15%;
-    --wave-blue: 210 60% 50%;
-    --sea-foam: 180 30% 25%;
+    /* Dark Catai theme */
+    --catai-red: 0 85% 55%;
+    --catai-red-light: 0 85% 65%;
+    --catai-red-dark: 0 85% 45%;
+    --catai-gray: 0 0% 18%;
+    --catai-text: 0 0% 95%;
     
-    --gradient-ocean: linear-gradient(135deg, hsl(220 30% 8%), hsl(210 80% 20%));
-    --gradient-wave: linear-gradient(180deg, hsl(210 60% 25%), hsl(200 70% 30%));
-    --gradient-horizon: linear-gradient(90deg, hsl(220 30% 10%), hsl(220 30% 15%));
+    --gradient-catai: linear-gradient(135deg, hsl(0 85% 45%), hsl(0 85% 60%));
+    --gradient-red: linear-gradient(180deg, hsl(0 85% 50%), hsl(0 85% 35%));
+    --gradient-subtle: linear-gradient(90deg, hsl(0 0% 12%), hsl(0 0% 15%));
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
