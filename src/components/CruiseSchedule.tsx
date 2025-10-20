@@ -37,6 +37,12 @@ type BarcoInfo = {
   salida: string;
 };
 
+type HorarioRestaurante = {
+  id: number;
+  franja_horaria: string;
+  horario: string;
+};
+
 // Convierte enlaces de Google Maps (q, query, place, dir, @coords) a una consulta válida para Apple Maps
 const googleToAppleQuery = (input: string, fallback: string) => {
   if (!input) return fallback;
@@ -301,6 +307,8 @@ export default function CruiseSchedule() {
   const [loadingBarco, setLoadingBarco] = useState(true);
   const [weatherData1, setWeatherData1] = useState<any>(null);
   const [weatherData2, setWeatherData2] = useState<any>(null);
+  const [horarioRestaurante, setHorarioRestaurante] = useState<HorarioRestaurante[]>([]);
+  const [loadingHorario, setLoadingHorario] = useState(true);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -410,9 +418,29 @@ export default function CruiseSchedule() {
       }
     };
 
+    const fetchHorarioRestaurante = async () => {
+      try {
+        const { data, error } = await (supabase as any)
+          .from('horario_restaurante')
+          .select('*')
+          .order('id', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching horario restaurante:', error);
+        } else {
+          setHorarioRestaurante(data || []);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoadingHorario(false);
+      }
+    };
+
     fetchSchedule();
     fetchDestacados();
     fetchBarcoInfo();
+    fetchHorarioRestaurante();
   }, []);
 
   return (
@@ -638,20 +666,20 @@ export default function CruiseSchedule() {
               
               <Card className="border-l-4 border-l-primary">
                 <CardContent className="p-6">
-                  <div className="grid sm:grid-cols-3 gap-6 text-center">
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-2">Desayuno</h3>
-                      <p className="text-xl font-bold text-primary">7:00 a 9:30</p>
+                  {loadingHorario ? (
+                    <div className="text-center text-muted-foreground">Cargando horarios...</div>
+                  ) : horarioRestaurante.length > 0 ? (
+                    <div className={`grid gap-6 text-center ${horarioRestaurante.length === 3 ? 'sm:grid-cols-3' : `sm:grid-cols-${horarioRestaurante.length}`}`}>
+                      {horarioRestaurante.map((horario) => (
+                        <div key={horario.id}>
+                          <h3 className="font-semibold text-foreground mb-2">{horario.franja_horaria}</h3>
+                          <p className="text-xl font-bold text-primary">{horario.horario}</p>
+                        </div>
+                      ))}
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-2">Almuerzo</h3>
-                      <p className="text-xl font-bold text-primary">13:00 a 15:00</p>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-2">Cena</h3>
-                      <p className="text-xl font-bold text-primary">20:00 a 22:30</p>
-                    </div>
-                  </div>
+                  ) : (
+                    <div className="text-center text-muted-foreground">No hay horarios disponibles</div>
+                  )}
                 </CardContent>
               </Card>
             </div>
