@@ -459,6 +459,18 @@ export default function CruiseSchedule() {
           <div className="w-full h-full bg-gradient-to-br from-primary to-accent"></div>
         )}
         <div className="absolute inset-0 bg-black/40"></div>
+        
+        {/* Logo en la esquina superior izquierda */}
+        {barcoInfo?.logo && (
+          <div className="absolute top-4 left-4 z-10">
+            <img 
+              src={barcoInfo.logo} 
+              alt="Logo"
+              className="h-12 sm:h-16 w-auto object-contain"
+            />
+          </div>
+        )}
+        
         <div className="absolute inset-0 flex items-center justify-center text-center px-4">
           <div className="text-primary-foreground max-w-4xl w-full">
             <h1 className="text-3xl sm:text-5xl font-bold mb-2 tracking-wide">
