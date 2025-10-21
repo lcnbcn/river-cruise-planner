@@ -749,8 +749,23 @@ export default function CruiseSchedule() {
                                 variant="outline"
                                 onClick={() => {
                                   const input = destacado.direccion || destacado.lugar;
-                                  const query = googleToAppleQuery(input, destacado.lugar);
-                                  window.open(`https://maps.apple.com/?q=${encodeURIComponent(query)}`, '_blank');
+                                  
+                                  // Extraer coordenadas si existen en la URL (mismo método que Google Maps)
+                                  const coordsMatch = input.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                                  
+                                  if (coordsMatch) {
+                                    // Si encontramos coordenadas, usarlas directamente
+                                    const lat = coordsMatch[1];
+                                    const lon = coordsMatch[2];
+                                    window.open(`https://maps.apple.com/?q=${lat},${lon}`, '_blank');
+                                  } else if (input && /^https?:\/\//i.test(input)) {
+                                    // Si es una URL, intentar extraer con la función helper
+                                    const query = googleToAppleQuery(input, destacado.lugar);
+                                    window.open(`https://maps.apple.com/?q=${encodeURIComponent(query)}`, '_blank');
+                                  } else {
+                                    // Si no es una URL, hacer búsqueda por nombre
+                                    window.open(`https://maps.apple.com/?q=${encodeURIComponent(input)}`, '_blank');
+                                  }
                                 }}
                                 className="justify-start gap-3"
                               >
