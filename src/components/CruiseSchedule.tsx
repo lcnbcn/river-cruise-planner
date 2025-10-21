@@ -354,7 +354,7 @@ export default function CruiseSchedule() {
       try {
         const { data, error } = await (supabase as any)
           .from('barco')
-          .select('id, barco, dia, temperatura1, ciudad1, temperatura2, ciudad2, atraque, todos_abordos, salida')
+          .select('id, barco, dia, temperatura1, ciudad1, temperatura2, ciudad2, atraque, todos_abordos, salida, imagen')
           .eq('id', 1)
           .single();
 
