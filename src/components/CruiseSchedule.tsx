@@ -487,7 +487,7 @@ export default function CruiseSchedule() {
             <p className="text-xl sm:text-3xl font-bold opacity-90 mb-2">
               Programa diario
             </p>
-            <div className="flex flex-col items-center gap-1 sm:gap-2 mt-3 sm:mt-4 text-sm sm:text-lg opacity-90">
+            <div className="flex flex-col items-center gap-1 sm:gap-2 mt-3 sm:mt-4 text-base sm:text-xl opacity-90">
               <span className="text-center">
                 {loadingBarco ? "Cargando fecha..." : barcoInfo?.dia ? 
                   new Date(barcoInfo.dia).toLocaleDateString('es-ES', { 
@@ -518,7 +518,7 @@ export default function CruiseSchedule() {
                             alt={weatherData1.current.condition.text}
                             className="h-4 w-4 sm:h-5 sm:w-5 inline-block"
                           />
-                          <span className="text-xs sm:text-sm">
+                          <span className="text-sm sm:text-base">
                             {Math.round(weatherData1.current.temp_c)}°C - {barcoInfo?.ciudad1 || "Köln, Alemania"}
                             {weatherData1.current.condition.text && ` (${translateWeatherCondition(weatherData1.current.condition.text.toLowerCase())})`}
                           </span>
@@ -542,7 +542,7 @@ export default function CruiseSchedule() {
                                 alt={weatherData2.current.condition.text}
                                 className="h-4 w-4 sm:h-5 sm:w-5 inline-block"
                               />
-                              <span className="text-xs sm:text-sm">
+                              <span className="text-sm sm:text-base">
                                 {Math.round(weatherData2.current.temp_c)}°C - {barcoInfo.ciudad2}
                                 {weatherData2.current.condition.text && ` (${translateWeatherCondition(weatherData2.current.condition.text.toLowerCase())})`}
                               </span>
