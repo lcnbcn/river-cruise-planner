@@ -243,13 +243,15 @@ const addToCalendar = (activity: ProgramaItem) => {
   const ua = navigator.userAgent;
   const isIOS = /iPhone|iPad|iPod/i.test(ua);
   const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua) && !/CriOS/i.test(ua); // Solo Safari real, no Chrome
+  const isChromeiOS = /CriOS/i.test(ua); // Chrome en iOS
   
   console.log('🔍 Debug - Navegador:', ua);
   console.log('🔍 Debug - Es iOS:', isIOS);
   console.log('🔍 Debug - Es Safari:', isSafari);
+  console.log('🔍 Debug - Es Chrome iOS:', isChromeiOS);
   
-  // Para iOS: usar data URL con ICS para calendario nativo
-  if (isIOS) {
+  // Para Safari en iOS: usar data URL con ICS para calendario nativo
+  if (isIOS && isSafari) {
     const dataUrl = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(icsContent);
     toast.success('Abriendo Calendario...');
     window.location.href = dataUrl;
@@ -257,8 +259,8 @@ const addToCalendar = (activity: ProgramaItem) => {
   }
 
   // Solo Safari desktop: descargar ICS para calendario nativo
-  if (isSafari) {
-    console.log('🔍 Debug - Descargando ICS para Safari');
+  if (isSafari && !isIOS) {
+    console.log('🔍 Debug - Descargando ICS para Safari desktop');
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -275,7 +277,7 @@ const addToCalendar = (activity: ProgramaItem) => {
     return;
   }
 
-  // Todos los demás navegadores (Chrome, Firefox, Edge): usar Google Calendar
+  // Chrome en iOS y todos los demás navegadores (Chrome, Firefox, Edge): usar Google Calendar
   const title = encodeURIComponent(activity.actividad);
   const details = encodeURIComponent(activity.obs || '');
   const location = encodeURIComponent('MS Charles Dickens - Köln, Alemania');
