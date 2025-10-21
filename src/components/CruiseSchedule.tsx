@@ -6,6 +6,7 @@ import { Clock, MapPin, Anchor, ExternalLink, Calendar, Phone, MessageCircle, Cl
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import christmasBackground from "@/assets/christmas-background.jpg";
 
 type ProgramaItem = {
   id: number;
@@ -448,7 +449,18 @@ export default function CruiseSchedule() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-horizon">
+    <div className="min-h-screen bg-gradient-horizon relative">
+      {/* Fondo navideño */}
+      <div 
+        className="fixed inset-0 z-0 opacity-15"
+        style={{
+          backgroundImage: `url(${christmasBackground})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      />
+      <div className="relative z-10">
       {/* Hero Section */}
       <div className="relative h-80 sm:h-80 overflow-hidden">
         {barcoInfo?.imagen ? (
@@ -845,7 +857,7 @@ export default function CruiseSchedule() {
               className="inline-flex items-center gap-2 px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors text-sm"
             >
               <Phone className="w-4 h-4" />
-              Llamar
+               Llamar
             </a>
             <a
               href="https://wa.me/34644026781"
@@ -858,6 +870,7 @@ export default function CruiseSchedule() {
             </a>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
