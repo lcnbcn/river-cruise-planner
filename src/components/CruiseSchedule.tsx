@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Clock, MapPin, Anchor, ExternalLink, Calendar, Phone, MessageCircle, Cloud } from "lucide-react";
-import cruiseHero from "@/assets/charles-dickens-cruise.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -35,6 +34,7 @@ type BarcoInfo = {
   atraque: string;
   todos_abordos: string;
   salida: string;
+  imagen: string | null;
 };
 
 type HorarioRestaurante = {
@@ -448,11 +448,15 @@ export default function CruiseSchedule() {
     <div className="min-h-screen bg-gradient-horizon">
       {/* Hero Section */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
-        <img 
-          src={cruiseHero} 
-          alt="Crucero fluvial de lujo"
-          className="w-full h-full object-cover"
-        />
+        {barcoInfo?.imagen ? (
+          <img 
+            src={barcoInfo.imagen} 
+            alt="Crucero fluvial de lujo"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-primary to-accent"></div>
+        )}
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="absolute inset-0 flex items-center justify-center text-center px-4">
           <div className="text-primary-foreground max-w-4xl w-full">
