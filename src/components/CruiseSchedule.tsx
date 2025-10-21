@@ -760,12 +760,22 @@ export default function CruiseSchedule() {
                               <Button
                                 variant="outline"
                                 onClick={() => {
-                                  const url = destacado.direccion;
-                                  if (url && /^https?:\/\//i.test(url)) {
-                                    window.open(url, '_blank');
+                                  const input = destacado.direccion || destacado.lugar;
+                                  
+                                  // Extraer coordenadas si existen en la URL
+                                  const coordsMatch = input.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                                  
+                                  if (coordsMatch) {
+                                    // Si encontramos coordenadas, usarlas directamente
+                                    const lat = coordsMatch[1];
+                                    const lon = coordsMatch[2];
+                                    window.open(`https://www.google.com/maps/search/?api=1&query=${lat},${lon}`, '_blank');
+                                  } else if (input && /^https?:\/\//i.test(input)) {
+                                    // Si es una URL completa pero sin coordenadas en formato @, abrirla tal cual
+                                    window.open(input, '_blank');
                                   } else {
-                                    const search = url || destacado.lugar;
-                                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(search)}`, '_blank');
+                                    // Si no es una URL, hacer búsqueda por nombre
+                                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(input)}`, '_blank');
                                   }
                                 }}
                                 className="justify-start gap-3"
