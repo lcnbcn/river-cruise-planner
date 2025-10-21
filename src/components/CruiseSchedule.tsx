@@ -661,10 +661,10 @@ export default function CruiseSchedule() {
                             variant="ghost"
                             size="sm"
                             onClick={() => addToCalendar(item)}
-                            className="gap-1.5 text-xs opacity-60 hover:opacity-100 transition-opacity"
+                            className="gap-1.5 text-xs sm:opacity-60 hover:opacity-100 transition-opacity"
                           >
-                            <Calendar className="h-3.5 w-3.5" />
-                            <span className="hidden sm:inline">Añadir</span>
+                            <Calendar className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+                            <span>Añadir</span>
                           </Button>
                         </div>
                       </div>
