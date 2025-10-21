@@ -448,7 +448,7 @@ export default function CruiseSchedule() {
   return (
     <div className="min-h-screen bg-gradient-horizon">
       {/* Hero Section */}
-      <div className="relative h-64 sm:h-80 overflow-hidden">
+      <div className="relative h-80 sm:h-80 overflow-hidden">
         {barcoInfo?.imagen ? (
           <img 
             src={barcoInfo.imagen} 
