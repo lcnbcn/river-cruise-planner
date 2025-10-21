@@ -462,7 +462,7 @@ export default function CruiseSchedule() {
         
         {/* Logo en la esquina superior izquierda */}
         {barcoInfo?.logo && (
-          <div className="absolute top-4 left-4 z-10">
+          <div className="absolute top-6 left-6 sm:top-8 sm:left-8 z-10">
             <img 
               src={barcoInfo.logo} 
               alt="Logo"
