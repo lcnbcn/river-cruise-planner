@@ -637,7 +637,7 @@ export default function CruiseSchedule() {
                             </h3>
                           </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                        <div className="flex flex-row items-center gap-2 sm:gap-3">
                           <Badge 
                             variant={getActivityBadge(item.tipo_actividad).variant}
                             className={`flex-shrink-0 w-fit ${getActivityBadge(item.tipo_actividad).className || ''}`}
