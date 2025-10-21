@@ -658,13 +658,13 @@ export default function CruiseSchedule() {
                             {getActivityBadge(item.tipo_actividad).label}
                           </Badge>
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={() => addToCalendar(item)}
-                            className="gap-2 whitespace-nowrap text-xs w-full sm:w-auto"
+                            className="gap-1.5 text-xs opacity-60 hover:opacity-100 transition-opacity"
                           >
-                            <Calendar className="h-4 w-4" />
-                            Añadir al calendario
+                            <Calendar className="h-3.5 w-3.5" />
+                            <span className="hidden sm:inline">Añadir</span>
                           </Button>
                         </div>
                       </div>
