@@ -35,6 +35,7 @@ type BarcoInfo = {
   todos_abordos: string;
   salida: string;
   imagen: string | null;
+  logo: string | null;
 };
 
 type HorarioRestaurante = {
@@ -354,7 +355,7 @@ export default function CruiseSchedule() {
       try {
         const { data, error } = await (supabase as any)
           .from('barco')
-          .select('id, barco, dia, temperatura1, ciudad1, temperatura2, ciudad2, atraque, todos_abordos, salida, imagen')
+          .select('id, barco, dia, temperatura1, ciudad1, temperatura2, ciudad2, atraque, todos_abordos, salida, imagen, logo')
           .eq('id', 1)
           .single();
 
