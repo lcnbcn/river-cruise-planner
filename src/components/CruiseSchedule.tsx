@@ -320,7 +320,7 @@ export default function CruiseSchedule() {
         const { data, error } = await supabase
           .from('programa_diario')
           .select('*')
-          .order('id', { ascending: true });
+          .order('hora', { ascending: true });
 
         if (error) {
           console.error('Error fetching schedule:', error);
